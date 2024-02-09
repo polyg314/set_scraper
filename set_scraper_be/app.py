@@ -12,22 +12,88 @@ from flask_caching import Cache
 from bs4 import BeautifulSoup
 
 
-
+import redis
 
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
 load_dotenv()
 
+
+redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+
+
+
 DB_HOST = os.getenv('DB_HOST')
 DB_NAME = os.getenv('DB_NAME')
 DB_USER = os.getenv('DB_USER')
 DB_PASSWORD = os.getenv('DB_PASSWORD')
 API_KEY = os.getenv('API_KEY')
+CLIENT_ID = os.getenv('CLIENT_ID')
+CLIENT_SECRET = os.getenv('CLIENT_SECRET')
+REFRESH_TOKEN_ENDPOINT = 'https://oauth2.googleapis.com/token'
+
+
 
 cache = Cache(app, config={'CACHE_TYPE': 'SimpleCache', 'CACHE_DEFAULT_TIMEOUT': 300}) # 300 seconds = 5 minutes
 
 YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3/search"
+
+
+
+
+def get_refresh_token(google_id):
+    # Attempt to get the refresh token from Redis cache
+    refresh_token = redis_client.get(f"user:{google_id}:refresh_token")
+    if refresh_token is None:
+        # If not in cache, retrieve from secure storage, then cache it
+        refresh_token = retrieve_refresh_token_from_secure_storage(google_id)
+        redis_client.setex(f"user:{google_id}:refresh_token", 3600, refresh_token)  # Cache for 1 hour
+    return refresh_token
+
+def retrieve_refresh_token_from_secure_storage(google_id):
+    # Placeholder for fetching the refresh token from your secure persistent storage
+    # Implement your secure storage access logic here, possibly querying a database
+    # For demonstration, returning a placeholder
+    return "securely_stored_refresh_token"
+
+@app.route('/api/store-token', methods=['POST'])
+def store_token():
+    # Endpoint to securely store refresh token associated with a Google ID
+    data = request.json
+    google_id = data.get('googleId')
+    access_token = data.get('accessToken')  # Optional: handle/store access token as needed
+
+    # Here, you should securely store the refresh token that your backend obtained during OAuth
+    # For this example, we're just logging the Google ID
+    print(f"Storing tokens for Google ID: {google_id}")
+
+    # Placeholder response
+    return jsonify({"message": "Token stored successfully"}), 200
+
+@app.route('/api/refresh-token', methods=['POST'])
+def refresh_token():
+    google_id = request.json.get('googleId')
+    refresh_token = get_refresh_token(google_id)
+
+    # Use the refresh token to request a new access token
+    data = {
+        'client_id': CLIENT_ID,
+        'client_secret': CLIENT_SECRET,
+        'refresh_token': refresh_token,
+        'grant_type': 'refresh_token',
+    }
+
+    response = requests.post(REFRESH_TOKEN_ENDPOINT, data=data)
+    token_response = response.json()
+
+    # Return the new access token to the client
+    return jsonify({
+        'access_token': token_response.get('access_token'),
+        'expires_in': token_response.get('expires_in'),  # Time in seconds until the token expires
+    })
+
+
 
 @app.route('/api/videos')
 @cache.cached(timeout=300, query_string=True)  # Cache this route's response for 5 minutes
