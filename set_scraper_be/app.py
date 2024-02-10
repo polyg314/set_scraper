@@ -8,7 +8,8 @@ from werkzeug.serving import run_simple
 from flask_cors import CORS
 from flask_cors import cross_origin
 from flask_caching import Cache
-
+from datetime import datetime, timedelta
+import pytz  # Ensure you have pytz installed for timezone-aware datetimes
 from bs4 import BeautifulSoup
 
 
@@ -95,37 +96,39 @@ def refresh_token():
 
 
 
+
+
 @app.route('/api/videos')
 @cache.cached(timeout=300, query_string=True)  # Cache this route's response for 5 minutes
 def get_videos():
-    # channelId = request.args.get('channelId')
-    # part = request.args.get('part', 'snippet')
-    # maxResults = request.args.get('maxResults', 50)
-    # order = request.args.get('order', 'date')
-    # type = request.args.get('type', 'video')
+    print("/api/videos CALLED")
+    YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3/search'
+    channelId = 'UCJOtExbMu0RqIdiE4nMUPxQ'  # Example channel ID
+    part = 'snippet'
+    maxResults = 50
+    order = 'date'
+    type = 'video'
 
-    part='snippet'
-    channelId='UCJOtExbMu0RqIdiE4nMUPxQ'
-    maxResults=20
-    order='date'
-    type='video'
-    key=API_KEY
-    print("HIIII")
-    # Construct the YouTube API request
-    response = requests.get(
-        YOUTUBE_API_URL,
-        params={
-            "part": part,
-            "channelId": channelId,
-            "maxResults": maxResults,
-            "order": order,
-            "type": type,
-            "key": API_KEY,
-        }
-    )
+    # Calculate the datetime for one day ago in RFC 3339 format, effectively excluding the last 24 hours
+    one_day_ago = datetime.now(pytz.UTC) - timedelta(days=1)
 
-    # Forward the response from YouTube API
-    return jsonify(response.json())
+    params = {
+        'part': part,
+        'channelId': channelId,
+        'maxResults': maxResults,
+        'order': order,
+        'type': type,
+        'key': API_KEY,
+    }
+
+    response = requests.get(YOUTUBE_API_URL, params=params)
+    videos = response.json().get('items', [])
+
+    # Filter videos to exclude those published in the last day
+    one_day_ago = datetime.now(pytz.UTC) - timedelta(days=1)
+    filtered_videos = [video for video in videos if datetime.fromisoformat(video['snippet']['publishedAt'][:-1]+"+00:00") < one_day_ago]
+
+    return filtered_videos
 
 
 # def extract_video_urls_from_metadata(html):
