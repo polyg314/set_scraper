@@ -1,4 +1,6 @@
 import { AppBar, Box, IconButton, Toolbar, Typography } from "@material-ui/core";
+import Login from "./components/Login";
+
 
 export const Header = () => {
   return (
@@ -31,6 +33,8 @@ export const Header = () => {
               </Button>
             ))}
           </Box> */}
+
+          <Login />
         </Toolbar>
       </AppBar>
     </div>

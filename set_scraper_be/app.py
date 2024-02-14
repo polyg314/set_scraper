@@ -96,22 +96,33 @@ def refresh_token():
 
 
 
+def get_cache_key(channelId):
+    # Generate a unique cache key for the given channelId
+    return f"videos_{channelId}"
 
 
-@app.route('/api/videos')
-@cache.cached(timeout=300, query_string=True)  # Cache this route's response for 5 minutes
+@app.route('/api/videos', methods=['POST'])
 def get_videos():
+    data = request.get_json()
+    channelId = data.get('channelId', None)
+    print("CHANNEL ID")
+    print(channelId)
+    if not channelId:
+        return jsonify({"error": "channelId is required in the request body"}), 400
+
+    cache_key = get_cache_key(channelId)
+    cached_response = cache.get(cache_key)
+    if cached_response:
+        print("Returning cached response")
+        return jsonify(cached_response)
+
+
     print("/api/videos CALLED")
     YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3/search'
-    channelId = 'UCJOtExbMu0RqIdiE4nMUPxQ'  # Example channel ID
     part = 'snippet'
     maxResults = 50
     order = 'date'
     type = 'video'
-
-    # Calculate the datetime for one day ago in RFC 3339 format, effectively excluding the last 24 hours
-    one_day_ago = datetime.now(pytz.UTC) - timedelta(days=1)
-
     params = {
         'part': part,
         'channelId': channelId,
@@ -120,15 +131,52 @@ def get_videos():
         'type': type,
         'key': API_KEY,
     }
-
     response = requests.get(YOUTUBE_API_URL, params=params)
+    if response.status_code != 200:
+        return jsonify({"error": "Failed to fetch videos"}), response.status_code
+    
     videos = response.json().get('items', [])
-
-    # Filter videos to exclude those published in the last day
     one_day_ago = datetime.now(pytz.UTC) - timedelta(days=1)
     filtered_videos = [video for video in videos if datetime.fromisoformat(video['snippet']['publishedAt'][:-1]+"+00:00") < one_day_ago]
 
-    return filtered_videos
+    # Cache the response for next time
+    cache.set(cache_key, filtered_videos, timeout=1800)  # Cache for 30 minutes
+
+    return jsonify(filtered_videos)
+
+
+
+# @app.route('/api/videos')
+# @cache.cached(timeout=300, query_string=True)  # Cache this route's response for 5 minutes
+# def get_videos():
+#     print("/api/videos CALLED")
+#     YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3/search'
+#     channelId = 'UCJOtExbMu0RqIdiE4nMUPxQ'  # Example channel ID
+#     part = 'snippet'
+#     maxResults = 50
+#     order = 'date'
+#     type = 'video'
+
+#     # Calculate the datetime for one day ago in RFC 3339 format, effectively excluding the last 24 hours
+#     one_day_ago = datetime.now(pytz.UTC) - timedelta(days=1)
+
+#     params = {
+#         'part': part,
+#         'channelId': channelId,
+#         'maxResults': maxResults,
+#         'order': order,
+#         'type': type,
+#         'key': API_KEY,
+#     }
+
+#     response = requests.get(YOUTUBE_API_URL, params=params)
+#     videos = response.json().get('items', [])
+
+#     # Filter videos to exclude those published in the last day
+#     one_day_ago = datetime.now(pytz.UTC) - timedelta(days=1)
+#     filtered_videos = [video for video in videos if datetime.fromisoformat(video['snippet']['publishedAt'][:-1]+"+00:00") < one_day_ago]
+
+#     return filtered_videos
 
 
 # def extract_video_urls_from_metadata(html):

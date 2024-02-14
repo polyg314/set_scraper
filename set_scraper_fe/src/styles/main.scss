@@ -1,0 +1,27 @@
+
+$song-theme: pink;
+$set-theme: yellow;
+
+// body{
+//     background-color: yellow;
+// }
+
+
+.sets-songs-button{
+    background-color: blue;
+}
+
+.sets-songs-button:hover{
+    background-color: rgb(0, 174, 0) !important;
+}
+
+.sets-songs-button.active{
+    background-color: lime;
+}
+
+.current-channel-button:hover{
+    background-color: rgb(0, 174, 0) !important;
+}
+.current-channel-button.active{
+    background-color: lime;
+}
