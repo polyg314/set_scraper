@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AppBar, Grid, Tab, Tabs, Typography } from "@mui/material";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { AppBar, Autocomplete, Grid, Tab, Tabs, Typography } from "@mui/material";
 import Radio from '@mui/material/Radio';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import RadioGroup from '@mui/material/RadioGroup';
 import { Header } from "./Header";
 import axios from 'axios';
-import { Button, Toolbar, Tooltip } from "@material-ui/core";
+import { Button, Select, TextField, Toolbar, Tooltip } from "@material-ui/core";
 import { API_URL, Channels } from "./utils/constants";
 
 import { axiosConfig } from "./utils/constants";
@@ -15,6 +15,10 @@ import YouTubePlayer from "./components/YouTubePlayer";
 import { UserContext } from "./hooks/userContext";
 import { useSnackbar } from 'notistack';
 import "./styles/main.scss"
+import { MenuItem, IconButton } from '@mui/material';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import { ChannelsSelectWithArrows } from "./components/ChannelsSelectWithArrows";
 
 interface Video {
     id: {
@@ -49,103 +53,133 @@ function a11yProps(index: number) {
 
 export const Main = () => {
 
+
+
+    const MAX_SETS = 300;
+    const MAX_SONGS = 1000;
+
     const [currentlyPlayingType, setCurrentlyPlayingType] = useState('SETS')
 
     const { userInfo, setUserInfo } = useContext(UserContext);
 
     const [radioValue, setRadioValue] = React.useState('SETS');
 
-    const [videos, setVideos] = useState<Video[]>([]);
-
-    const API_KEY = process.env.REACT_APP_YOUTUBE_API_KEY;
-    // console.log(API_KEY);
-    // const [channelID, setChannelID] = useState('UCJOtExbMu0RqIdiE4nMUPxQ');
-
-    const handleRadioChange = (v) => {
-        // console.log(event.target.value);
-        setRadioValue(v);
-    };
-
-    const [songVideos, setSongVideos] = useState([]);
 
 
-    const [videosAdded, setVideosAdded] = useState<any>([]);
+    const [songVideos, setSongVideos] = useState(() => {
+        // Attempt to load saved songs from local storage
+        const savedSongs = localStorage.getItem('songVideos');
+        return savedSongs ? JSON.parse(savedSongs) : [];
+    });
+
+
 
     const [currentVideo, setCurrentVideo] = useState(null)
 
-    const MAX_SETS = 3;
+
 
     const [playedSets, setPlayedSets] = useState(() => {
         const storedSets = localStorage.getItem('playedSets');
+        console.log("played sets")
+        console.log(storedSets)
         return storedSets ? JSON.parse(storedSets) : [];
     });
-    
-      // Update local storage whenever playedSets changes
-      useEffect(() => {
-        localStorage.setItem('playedSets', JSON.stringify(playedSets));
-      }, [playedSets]);
-    
-      // Function to add a new set ID, ensuring the max length is not exceeded
-    const addSetId = (newSetId) => {
-        console.log("ADD SET ID")
-        setPlayedSets((prevPlayedSets) => {
-            // Create a new array to avoid mutating the state directly
-            let updatedSets = [...prevPlayedSets, newSetId];
-            updatedSets = Array.from(new Set(updatedSets)); // Fix: Replace 'set' with 'Set'
-            if(updatedSets !== prevPlayedSets){
-                // If the length exceeds MAX_SETS, remove the oldest entry (first in the array)
-                if (updatedSets.length > MAX_SETS) {
-                    updatedSets.shift(); // Removes the first item
-                }
-            }
 
-            
+    const [addedSets, setAddedSets] = useState(() => {
+        const storedSets = localStorage.getItem('addedSets');
+        console.log("played sets")
+        console.log(storedSets)
+        return storedSets ? JSON.parse(storedSets) : [];
+    });
+
+
+    const handleRadioChange = (v) => {
+        setRadioValue(v);
+    };
+
+
+    // Update local storage whenever playedSets changes
+    useEffect(() => {
+        localStorage.setItem('playedSets', JSON.stringify(playedSets));
+    }, [playedSets]);
+
+    // Update local storage whenever playedSets changes
+    useEffect(() => {
+        // console.log("added sets")
+        // console.log(JSON.stringify(addedSets))
+        localStorage.setItem('addedSets', JSON.stringify(addedSets));
+    }, [addedSets]);
+
+
+    // Function to add a new set ID, ensuring the max length is not exceeded
+
+    const currentVideoRef = useRef(currentVideo);
+
+    useEffect(() => {
+        currentVideoRef.current = currentVideo;
+    }, [currentVideo]); // Update ref whenever `currentVideo` changes
+
+
+    const currentlyPlayingTypeRef = useRef(currentlyPlayingType);
+
+    useEffect(() => {
+        currentlyPlayingTypeRef.current = currentlyPlayingType;
+    }, [currentlyPlayingType]);
+
+
+    const addSetId = () => {
+
+        setPlayedSets((prevPlayedSets) => {
+            console.log(currentVideoRef.current.id.videoId)
+            // Create a new array to avoid mutating the state directly
+            let updatedSets = [...prevPlayedSets, currentVideoRef.current.id.videoId];
+            updatedSets = Array.from(new Set(updatedSets)); // Fix: Replace 'set' with 'Set'
+
+            if (updatedSets.length > MAX_SETS) {
+                updatedSets.shift(); // Removes the first item
+            }
             return updatedSets;
         });
     };
 
 
-
-    const MAX_SONGS = 5;
-
     const [playedSongs, setPlayedSongs] = useState(() => {
         const storedSongs = localStorage.getItem('playedSongs');
+        console.log("played songs")
         console.log(storedSongs)
         return storedSongs ? JSON.parse(storedSongs) : [];
     });
-    
-      // Update local storage whenever playedSongs changes
-      useEffect(() => {
+
+    // Update local storage whenever playedSongs changes
+    useEffect(() => {
         localStorage.setItem('playedSongs', JSON.stringify(playedSongs));
-      }, [playedSongs]);
-    
-      // Function to add a new set ID, ensuring the max length is not exceeded
-    const addSongId = (newSongId) => {
+    }, [playedSongs]);
+
+    // Function to add a new set ID, ensuring the max length is not exceeded
+    const addSongId = () => {
         console.log("ADD SONG ID")
         setPlayedSongs((prevPlayedSongs) => {
+            console.log(currentVideoRef.current.id.videoId)
             // Create a new array to avoid mutating the state directly
-            let updatedSongs = [...prevPlayedSongs, newSongId];
-            updatedSongs = Array.from(new Set(updatedSongs)); // Fix: Replace 'set' with 'Set'
-            if(updatedSongs !== prevPlayedSongs){
-                // If the length exceeds MAX_Songs, remove the oldest entry (first in the array)
-                if (updatedSongs.length > MAX_SONGS) {
-                    updatedSongs.shift(); // Removes the first item
-                }
-            }
+            let updatedSongs = [...prevPlayedSongs, currentVideoRef.current.id.videoId];
+            updatedSongs = Array.from(new Set(updatedSongs)); // Fix: Replace 'Song' with 'Song'
 
-            
+            if (updatedSongs.length > MAX_SONGS) {
+                updatedSongs.shift(); // Removes the first item
+            }
             return updatedSongs;
         });
     };
 
     const addId = (newId) => {
         console.log("add id")
-        console.log(currentlyPlayingType)
-        if(currentlyPlayingType === "SETS"){
-            addSetId(newId)
-        }else if(currentlyPlayingType === "SONGS"){
-            addSongId(newId)
-        }   
+        console.log(currentlyPlayingTypeRef)
+        console.log(newId)
+        if (currentlyPlayingTypeRef.current === "SETS") {
+            addSetId()
+        } else if (currentlyPlayingTypeRef.current === "SONGS") {
+            addSongId()
+        }
     }
 
 
@@ -157,31 +191,15 @@ export const Main = () => {
         setCurrentChannelId(channelId)
     }
 
+    const updateSongVideos = (newVideos) => {
+        // Combine new and existing videos, ensuring uniqueness and not exceeding 200
+        const allVideos = [...newVideos, ...songVideos].slice(0, 200);
+        setSongVideos(allVideos);
+        // Update local storage
+        localStorage.setItem('songVideos', JSON.stringify(allVideos));
+    };
 
-    // axiosConfig["Authorization"] = jwt
-
-
-    // const fetchVideoDetails = async (videoIds) => {
-    //     const idsString = videoIds.join(','); // Join the video IDs into a comma-separated string
-    //     const url = `https://www.googleapis.com/youtube/v3/videos?id=${idsString}&key=${API_KEY}&part=snippet,contentDetails,statistics`;
-
-    //     try {
-    //         const response = await axios.get(url);
-    //         const videoData = response.data.items; // Array of video details
-
-    //         // Append new video data to the existing state
-    //         // setSongVideos(prevVideos => [...prevVideos, ...videoData]);
-    //     } catch (error) {
-    //         console.error('Failed to fetch video details:', error);
-    //     }
-    // };
-
-
-    const scrapeSetMusic = async (videoId: string) => {
-
-        console.log("SCRAPE IT")
-        console.log("SONG VIDS")
-        console.log(songVideos)
+    const scrapeSetMusic = async (videoId: string, setInfo) => {
         try {
             let res = await axios({
                 url: API_URL + '/scrape_set',
@@ -189,56 +207,73 @@ export const Main = () => {
                 data: { videoId: videoId },
                 timeout: 8000,
                 headers: axiosConfig
-            })
-            if (res.status === 200) {
-                if (res.data.video_details) {
-                    console.log("HIHIHI")
-                    console.log(res.data.video_details)
-                    for (let i = 0; i < res.data.video_details.length; i++) {
-                        let id = res.data.video_details[i].id
-                        res.data.video_details[i].id = {}
-                        res.data.video_details[i].id.videoId = id
-                        res.data.video_details[i]["channelId"] = currentChannelId   
-                        res.data.video_details[i]["setId"] = videoId 
+            });
+            if (res.status === 200 && res.data.video_details) {
+                console.log("HIHIHI");
+                console.log(res.data.video_details);
+                let videosToAdd = res.data.video_details.map(videoDetail => {
+                    let id = videoDetail.id;
+                    return {
+                        ...videoDetail,
+                        id: { videoId: id },
+                        channelId: setInfo.channelId,
+                        channelName: setInfo.channelName,
+                        setId: setInfo.setId,
+                        setName: setInfo.setName
+                    };
+                });
 
-                    }
-                    // var songVideoCopy = objectCopy(songVideos)
-                    // songVideoCopy.push
-                    let songIds = songVideos.map((video) => video.id.videoId)
-                    var videosToAdd = []
-                    for (let i = 0; i < res.data.video_details.length; i++) {
-                        if (!(res.data.video_details[i].id.videoId in songIds)) {
-                            videosToAdd.push(res.data.video_details[i])
-                        }
-                    }
-                    setSongVideos([...songVideos, ...videosToAdd])
-
-                    // fetchVideoDetails(res.data.ids)
+                // Filter out duplicates before adding
+                videosToAdd = videosToAdd.filter(video => !songVideos.some(existingVideo => existingVideo.id.videoId === video.id.videoId));
+                if (videosToAdd.length === 0) {
+                    enqueueSnackbar('0 songs detected - none added to queue', { variant: 'warning' });
+                } else {
+                    enqueueSnackbar(String(videosToAdd.length) + ' songs added to queue', { variant: 'success' });
+                    updateSongVideos(videosToAdd);
                 }
-                return res.data
+
             }
-            return [{}]
-        }
-        catch (err) {
+            return res.data;
+        } catch (err) {
             console.error('There was an error!', err);
-            return [{}]
+            enqueueSnackbar('No songs added to queue', { variant: 'error' });
+            return [{}];
         }
-
-    }
-
+    };
 
 
 
-    const handleScrapeSet = (videoId) => {
+
+
+    const handleScrapeSet = (video) => {
+        console.log(video)
+        let videoId = video["id"]["videoId"];
         console.log('videoId:', videoId);
-        setVideosAdded([...videosAdded, videoId]);
+        let setInfo = {}
+        setInfo["channelId"] = video["snippet"]["channelId"];
+        setInfo["channelName"] = video["snippet"]["channelTitle"];
+        setInfo["setName"] = video["snippet"]["title"];
+        setInfo["setId"] = videoId;
+
+        setAddedSets((prevAddedSets) => {
+            console.log(videoId)
+            // Create a new array to avoid mutating the state directly
+            let updatedSets = [...prevAddedSets, videoId];
+            updatedSets = Array.from(new Set(updatedSets)); // Fix: Replace 'set' with 'Set'
+
+            if (updatedSets.length > MAX_SETS) {
+                updatedSets.shift(); // Removes the first item
+            }
+            console.log("NEW ADDED")
+            console.log(updatedSets)
+            return updatedSets;
+        });
+        // setaddedSets([...addedSets, videoId]);
 
         //api call to backend to scrape set music
-        scrapeSetMusic(videoId).then((response) => {
+        scrapeSetMusic(videoId, setInfo).then((response) => {
             console.log('response:', response);
         })
-
-
 
     }
 
@@ -271,23 +306,23 @@ export const Main = () => {
 
     const [channelVideos, setChannelVideos] = useState({})
 
-    
+
     useEffect(() => {
 
         Promise.all(Channels.map(channel => fetchVideos(channel["channelId"])))
-        .then(responses => {
-          const channelVideosCopy = objectCopy(channelVideos);
-          responses.forEach(response => {
-            if (response.length > 0) {
-              channelVideosCopy[response[0]["snippet"]["channelId"]] = response;
-            }
-          });
-          setChannelVideos(channelVideosCopy);
-          setCurrentVideo(channelVideosCopy[Channels[0]["channelId"]][0])
-          
-          // Optionally set the current video here, if needed
-        })
-        .catch(error => console.error("Error fetching videos:", error));
+            .then(responses => {
+                let channelVideosCopy = objectCopy(channelVideos);
+                responses.forEach(response => {
+                    if (response.length > 0) {
+                        channelVideosCopy[response[0]["snippet"]["channelId"]] = response;
+                    }
+                });
+                setChannelVideos(channelVideosCopy);
+                setCurrentVideo(channelVideosCopy[Channels[0]["channelId"]][0])
+
+                // Optionally set the current video here, if needed
+            })
+            .catch(error => console.error("Error fetching videos:", error));
 
         ;
     }, []);
@@ -300,13 +335,8 @@ export const Main = () => {
     const handlePlaySet = (video) => {
         console.log("PLAY SET")
         console.log(video)
-        setCurrentlyPlayingType('SETS')
-
-        // if(currentlyPlayingType !== 'SETS'){
-
-        // }
         setCurrentVideo(video)
-        // addSetId(video["id"]["videoId"])
+        setCurrentlyPlayingType('SETS')
     }
 
     const handlePlaySong = (video) => {
@@ -315,7 +345,7 @@ export const Main = () => {
         setCurrentlyPlayingType('SONGS')
         // if(currentlyPlayingType !== 'SONGS'){
         //     console.log('setting currently playing type')
-           
+
         // }
         // var id = video["id"]
         // video["id"] = {}
@@ -377,8 +407,8 @@ export const Main = () => {
 
     const getPreviousDisabled = () => {
         var disabled = false
-        if (radioValue === 'SETS') {
-            disabled = (videos.map((video) => video.id.videoId).indexOf(currentVideo.id.videoId) === 0 || videos.length === 0)
+        if (currentlyPlayingType === 'SETS') {
+            disabled = (channelVideos[currentChannelId].map((video) => video.id.videoId).indexOf(currentVideo.id.videoId) === 0 || channelVideos[currentChannelId].length === 0)
         }
         else {
             disabled = songVideos.map((video) => video.id.videoId).indexOf(currentVideo.id.videoId) === 0 || songVideos.length === 0
@@ -387,9 +417,10 @@ export const Main = () => {
     }
 
     const getNextDisabled = () => {
+
         var disabled = false
-        if (radioValue === 'SETS') {
-            disabled = videos.map((video) => video.id.videoId).indexOf(currentVideo.id.videoId) === (videos.length - 1) || videos.length === 0
+        if (currentlyPlayingType === 'SETS') {
+            disabled = channelVideos[currentChannelId].map((video) => video.id.videoId).indexOf(currentVideo.id.videoId) === (channelVideos[currentChannelId].length - 1) || channelVideos[currentChannelId].length === 0
         }
         else {
             disabled = songVideos.map((video) => video.id.videoId).indexOf(currentVideo.id.videoId) === (songVideos.length - 1) || songVideos.length === 0
@@ -399,30 +430,44 @@ export const Main = () => {
 
 
     const handlePlayNext = (videoId) => {
-        if (radioValue === 'SETS') {
-            for (let i = 0; i < videos.length; i++) {
-                if (videos[i].id.videoId === videoId) {
-                    setCurrentVideo(videos[i + 1])
-                    return
+        if (!getNextDisabled()) {
+            if (currentlyPlayingTypeRef.current === 'SETS') {
+                for (let i = 0; i < channelVideos[currentChannelId].length; i++) {
+                    if (channelVideos[currentChannelId][i].id.videoId === videoId) {
+                        setCurrentVideo(channelVideos[currentChannelId][i + 1])
+                        return
+                    }
                 }
+                setCurrentVideo(channelVideos[currentChannelId][0])
             }
-            setCurrentVideo(videos[0])
-        }
-        else {
-            for (let i = 0; i < songVideos.length; i++) {
-                if (songVideos[i].id.videoId === videoId) {
-                    setCurrentVideo(songVideos[i + 1])
-                    return
+            else {
+                for (let i = 0; i < songVideos.length; i++) {
+                    if (songVideos[i].id.videoId === videoId) {
+                        setCurrentVideo(songVideos[i + 1])
+                        return
+                    }
                 }
+                setCurrentVideo(songVideos[0])
             }
-            setCurrentVideo(songVideos[0])
         }
+        else return
 
 
     }
 
+    const [filter, setFilter] = useState("")
+    const handleSetFilter = (e) => {
+        setFilter(e.target.value)
+    }
+    const getFiltered = (video, filter) => {
+        if (filter === "") {
+            return true
+        }
+        else {
+            return video.snippet.title.toLowerCase().includes(filter.toLowerCase())
+        }
+    }
 
-   
 
 
     return (
@@ -441,11 +486,12 @@ export const Main = () => {
                             <Grid item xs={12}>
 
                                 <>
-                                    <YouTubePlayer 
-                                    addId={addId}
-                                    radioValue={radioValue}
-                                    currentlyPlayingType={currentlyPlayingType}
-                                    videoId={currentVideo.id.videoId} />
+                                    <YouTubePlayer
+                                        handlePlayNext={handlePlayNext}
+                                        addId={addId}
+                                        // radioValue={radioValue}
+                                        currentlyPlayingType={currentlyPlayingType}
+                                        videoId={currentVideo.id.videoId} />
 
                                 </>
 
@@ -459,7 +505,7 @@ export const Main = () => {
                                         color="primary"
                                         onClick={(e) => handlePlayPrevious(currentVideo.id.videoId)}
                                         disabled={getPreviousDisabled()}>
-                                        Previous {radioValue === 'SETS' ? "Set" : "Song"}
+                                        Previous {currentlyPlayingType === 'SETS' ? "Set" : "Song"}
                                     </Button>
 
                                 </Grid>
@@ -474,21 +520,21 @@ export const Main = () => {
                                             color="primary"
                                             disabled={!userInfo.accessToken}
                                             onClick={(e) => handleLike(currentVideo.id.videoId)}>
-                                            Like  {radioValue === 'SETS' ? "Set" : "Song"}
+                                            Like  {currentlyPlayingType === 'SETS' ? "Set" : "Song"}
                                         </Button>
                                     </Tooltip>
-                                    {radioValue === 'SETS' &&
+                                    {currentlyPlayingType === 'SETS' &&
                                         <Button variant="contained"
                                             color="secondary"
                                             style={{ marginLeft: 10 }}
-                                            disabled={videosAdded.includes(currentVideo["id"]["videoId"])}
-                                            onClick={(e) => handleScrapeSet(currentVideo["id"]["videoId"])}
+                                            disabled={addedSets.includes(currentVideo["id"]["videoId"])}
+                                            onClick={(e) => handleScrapeSet(currentVideo)}
                                         >
-                                            {!videosAdded.includes(currentVideo) &&
+                                            {!addedSets.includes(currentVideo["id"]["videoId"]) &&
                                                 <span>Add Songs To Queue</span>
                                             }
 
-                                            {videosAdded.includes(currentVideo) &&
+                                            {addedSets.includes(currentVideo["id"]["videoId"]) &&
                                                 <span>Added</span>
                                             }
                                         </Button>
@@ -503,7 +549,7 @@ export const Main = () => {
                                         color="primary"
                                         onClick={(e) => handlePlayNext(currentVideo.id.videoId)}
                                         disabled={getNextDisabled()}>
-                                        Next  {radioValue === 'SETS' ? "Set" : "Song"}
+                                        Next  {currentlyPlayingType === 'SETS' ? "Set" : "Song"}
                                     </Button>
 
                                 </Grid>
@@ -518,39 +564,92 @@ export const Main = () => {
                 </Grid>
 
                 {/* </Grid> */}
-                <Grid item container xs={12} lg={8} style={{ margin: "0 auto", background: "#ffe500", paddingBottom: 0 }}>
-                    <Grid item xs={12}>
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            value="SETS"
-                            onClick={(e) => handleRadioChange("SETS")}
-                            style={{}}
-                            className={"sets-songs-button sets " + (radioValue === 'SETS' ? "active" : "")}
-                        >
-                            <b>SETS</b>
-                        </Button>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            value="SONG QUEUE"
-                            onClick={(e) => handleRadioChange("SONG QUEUE")}
-                            style={{}}
-                            className={"sets-songs-button songs " + (radioValue === 'SONG QUEUE' ? "active" : "")}
-                        >
-                            <b>SONG QUEUE</b>
-                        </Button>
-                    </Grid>
+                <Grid item container xs={12} lg={8}
+                    style={{
+                        margin: "0 auto",
+                        background: "#ffe500",
+                        paddingBottom: 0
+                    }}>
+                    <Grid 
+                        item 
+                        xs={4} 
+                        container
+                        className={"sets-songs-buttons-container" + (radioValue === 'SETS' ? " sets" : " songs")}
+                    >
+                        <Grid item xs={6} lg={6}>
+                            <Button
+                                fullWidth
+                                variant="contained"
+                                style={{
+                                    backgroundColor: "transparent",
+                                    padding: 8,
+                                    borderRadius: 0,
+                                    border: "none"
+                                }}
+                                color="primary"
+                                value="SETS"
+                                onClick={(e) => handleRadioChange("SETS")}
+                                className={"sets-songs-button sets " + (radioValue === 'SETS' ? "active" : "")}
+                            >
+                                <b>SETS</b>
+                            </Button>
+                        </Grid>
+                        <Grid item xs={6} lg={6}>
+                            <Button
+                                fullWidth
+                                style={{
+                                    backgroundColor: "transparent",
+                                    padding: 8,
+                                    borderRadius: 0,
+                                    border: "none"
+                                }}
 
+                                variant="contained"
+                                color="primary"
+                                value="SONG QUEUE"
+                                onClick={(e) => handleRadioChange("SONG QUEUE")}
+                                className={"sets-songs-button songs " + (radioValue === 'SONG QUEUE' ? "active" : "")}
+                            >
+                                <b>SONG QUEUE</b>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={6} lg={4}>
+                        <ChannelsSelectWithArrows
+                            Channels={Channels}
+                            currentChannelId={currentChannelId}
+                            handleSetChannelId={handleSetChannelId}
+                        />
+                        {/* <Select
+                            fullWidth
+                            variant="outlined"
+                            color="primary"
+                            value={currentChannelId}
+                            onChange={(e) => handleSetChannelId(e.target.value)}
+                            style={{backgroundColor: "white"}}
+                            className={"current-channel-select"}>
+                            {Channels.map((channel, index) => (
+                                <option value={channel["channelId"]}>{channel["channelName"]}</option>
+                            ))}
+                        </Select> */}
+                    </Grid>
+                    <Grid item xs={6} lg={4}>
+                        <TextField
+                            fullWidth
+                            onChange={(e) => handleSetFilter(e)}
+                            variant="outlined"
+                            color="primary"
+                            value={filter}
+                            placeholder={"Filter"}
+                            style={{ backgroundColor: "white" }}
+                            size="small"
+                            className={"search-bar"} />
+                    </Grid>
 
                 </Grid>
 
 
-
+                {/* 
                 {radioValue === 'SETS' &&
                     <Grid item container xs={12} lg={8} style={{ margin: "0 auto", background: "#ffe500", paddingBottom: 0 }}>
                         {Channels.map((channel, index) => (
@@ -576,11 +675,11 @@ export const Main = () => {
 
                     </Grid>
                 }
-
+ */}
 
             </Grid>
 
-            <Grid container item style={{ padding: 0, background: "green", marginTop: 490, textAlign: "center" }}>
+            <Grid container item style={{ padding: 0, background: "green", marginTop: 426, textAlign: "center" }}>
 
                 {radioValue === 'SETS' &&
                     <Grid item xs={12} md={8} style={{ margin: "0 auto", background: "beige", paddingBottom: 20 }}>
@@ -590,7 +689,10 @@ export const Main = () => {
 
                                 <>
                                     {channelVideos[currentChannelId].map((video, index) => (
-                                        <Grid container key={index} xs={12}>
+                                        <>
+                                        {getFiltered(video, filter) && 
+                                            <>
+                                             <Grid container key={index} xs={12}>
                                             {/* {videos.map((video, index) => ( */}
                                             <Grid item xs={4} md={4}>
                                                 {/* image thumbnail for each of the videos */}
@@ -605,13 +707,13 @@ export const Main = () => {
                                                     </a>
                                                 </h2>
                                                 <p>{video.snippet.description}</p>
-                                                {playedSets.includes(video["id"]["videoId"]) && 
+                                                {playedSets.includes(video["id"]["videoId"]) &&
                                                     <>ALREADY PLAYED</>
                                                 }
                                                 <Button variant="contained"
                                                     color="secondary"
                                                     style={{ margin: "0 auto", marginTop: 20 }}
-                                                    // disabled={videosAdded.includes(video["id"]["videoId"])}
+                                                    // disabled={addedSets.includes(video["id"]["videoId"])}
                                                     onClick={(e) => handlePlaySet(video)}
                                                 >
                                                     Play Set
@@ -620,14 +722,14 @@ export const Main = () => {
                                                 <Button variant="contained"
                                                     color="secondary"
                                                     style={{ margin: "0 auto", marginTop: 20 }}
-                                                    disabled={videosAdded.includes(video["id"]["videoId"])}
-                                                    onClick={(e) => handleScrapeSet(video["id"]["videoId"])}
+                                                    disabled={addedSets.includes(video["id"]["videoId"])}
+                                                    onClick={(e) => handleScrapeSet(video)}
                                                 >
-                                                    {!videosAdded.includes(video) &&
+                                                    {!addedSets.includes(video["id"]["videoId"]) &&
                                                         <span>Add Songs To Queue</span>
                                                     }
 
-                                                    {videosAdded.includes(video) &&
+                                                    {addedSets.includes(video["id"]["videoId"]) &&
                                                         <span>Added</span>
                                                     }
                                                 </Button>
@@ -635,6 +737,10 @@ export const Main = () => {
                                             </Grid>
 
                                         </Grid>
+                                            </>
+                                        }
+                                        </>
+                                       
                                     ))}
 
 
@@ -659,12 +765,7 @@ export const Main = () => {
                                     <img src={video.snippet.thumbnails.default.url}>
 
                                     </img>
-                                    {/* <iframe
-                                            width="100%"
-                                            height="200"
-                                            src={`https://www.youtube-nocookie.com/embed/${video.id}`}
-                                            // title={video.snippet.title}
-                                        /> */}
+
 
                                 </Grid>
                                 <Grid item xs={8} md={8}>
@@ -674,31 +775,33 @@ export const Main = () => {
                                         </a>
                                     </h2>
                                     <p>{video.snippet.description}</p>
-                                    {playedSongs.includes(video["id"]["videoId"]) && 
-                                                    <><h3>ALREADY PLAYED</h3></>
-                                                }
+
                                     <Button variant="contained"
                                         color="secondary"
                                         style={{ margin: "0 auto", marginTop: 20 }}
-                                        // disabled={videosAdded.includes(video["id"]["videoId"])}
+                                        disabled={currentVideo.id.videoId === video.id.videoId}
                                         onClick={(e) => handlePlaySong(video)}
                                     >
-                                        Play Song
-                                    </Button>
-                                    {/* <Button variant="contained"
-                                            color="secondary"
-                                            style={{ margin: "0 auto", marginTop: 20 }}
-                                            disabled={videosAdded.includes(video["id"]["videoId"])}
-                                            onClick={(e) => handleScrapeSet(video["id"]["videoId"])}
-                                        >
-                                            {!videosAdded.includes(video) &&
-                                                <span>Add Songs To Queue</span>
-                                            }
+                                        {currentVideo.id.videoId === video.id.videoId &&
+                                            <>Playing...</>
+                                        }
+                                        {!(currentVideo.id.videoId === video.id.videoId) &&
+                                            <>Play Song</>
+                                        }
 
-                                            {videosAdded.includes(video) &&
-                                                <span>Added</span>
-                                            }
-                                        </Button> */}
+
+                                        {/* {video["id"]["videoId"]} */}
+                                        {/* {playedSongs.join(", ")} */}
+
+                                    </Button>
+                                    {playedSongs.includes(video["id"]["videoId"]) &&
+                                        <><h3>ALREADY PLAYED</h3></>
+                                    }
+
+                                    <h5>{video["setId"]}</h5>
+                                    <h5>{video["setName"]}</h5>
+                                    <h5>{video["channelId"]}</h5>
+                                    <h5>{video["channelName"]}</h5>
 
                                 </Grid>
 

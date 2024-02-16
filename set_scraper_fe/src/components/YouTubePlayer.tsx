@@ -27,7 +27,7 @@ const YouTubePlayer = (props:any) => {
             console.log(event)
             if(event.data === 1){
                 // console.log(props.currentlyPlayingType)
-                props.addId(props.videoId)
+                props.addId()
                 // if(props.currentlyPlayingType === "SETS"){
                 //     console.log('adding set id')
                 //     props.addSetId(props.videoId)
@@ -38,6 +38,11 @@ const YouTubePlayer = (props:any) => {
             //   console.log('video playing')
             //   props.addVideoId(props.videoId)
             }
+            else if (event.data == 0) {
+                props.handlePlayNext()
+                // color = "#FFFF00"; // ended = yellow
+
+            } 
             // if (playerStatus == -1) {
             //     color = "#37474F"; // unstarted = gray
             //   } else if (playerStatus == 0) {

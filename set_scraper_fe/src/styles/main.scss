@@ -1,7 +1,7 @@
 
-$song-theme: pink;
+$song-theme: hotpink;
 $set-theme: yellow;
-
+$song-theme-dark: darkmagenta;
 // body{
 //     background-color: yellow;
 // }
@@ -15,13 +15,61 @@ $set-theme: yellow;
     background-color: rgb(0, 174, 0) !important;
 }
 
-.sets-songs-button.active{
-    background-color: lime;
+.sets-songs-button{
+    color: black !important;
 }
 
-.current-channel-button:hover{
+.sets-songs-button.active{
+    background-color: lime;
+    color: black !important;
+}
+
+.current-channel-button.sets:hover{
     background-color: rgb(0, 174, 0) !important;
 }
 .current-channel-button.active{
     background-color: lime;
+    color: black;
 }
+
+.sets-songs-button.songs:hover{
+    background-color: $song-theme !important;
+}
+
+.sets-songs-buttons-container.sets{
+      /* Create a linear gradient from lime green to white */
+    background: linear-gradient(to right, limegreen 48%, white 52%) !important;
+
+    /* Ensure the gradient covers the entire container */
+    background-size: cover;
+    // background-color: lime !important;
+}
+
+.sets-songs-buttons-container.songs{
+    background: linear-gradient(to left, $song-theme 48%, white 52%) !important;
+
+    /* Ensure the gradient covers the entire container */
+    background-size: cover;
+    // background-color: lime !important;
+}
+
+// /* Keyframes for the wave effect */
+// @keyframes waveEffect {
+//     0%, 100% {
+//         background-color: transparent;
+//     }
+//     50% {
+//         background-color: lime;
+//     }
+// }
+
+// /* Applying the animation to the .sets class */
+// .sets-songs-buttons-container.sets {
+//     animation: waveEffect 3s ease-in-out infinite;
+// }
+
+// /* Applying the animation to the .songs class with a slight delay */
+// .sets-songs-buttons-container.songs {
+//     animation: waveEffect 3s ease-in-out infinite;
+//     animation-delay: 1.5s; /* Adjust this delay to control the wave effect timing between the two divs */
+// }
