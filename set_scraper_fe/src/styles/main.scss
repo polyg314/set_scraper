@@ -38,7 +38,7 @@ $song-theme-dark: darkmagenta;
 
 .sets-songs-buttons-container.sets{
       /* Create a linear gradient from lime green to white */
-    background: linear-gradient(to right, limegreen 48%, white 52%) !important;
+    background: linear-gradient(to right, limegreen 49%, white 51%) !important;
 
     /* Ensure the gradient covers the entire container */
     background-size: cover;
@@ -46,7 +46,7 @@ $song-theme-dark: darkmagenta;
 }
 
 .sets-songs-buttons-container.songs{
-    background: linear-gradient(to left, $song-theme 48%, white 52%) !important;
+    background: linear-gradient(to left, $song-theme 49%, white 51%) !important;
 
     /* Ensure the gradient covers the entire container */
     background-size: cover;
@@ -73,3 +73,30 @@ $song-theme-dark: darkmagenta;
 //     animation: waveEffect 3s ease-in-out infinite;
 //     animation-delay: 1.5s; /* Adjust this delay to control the wave effect timing between the two divs */
 // }
+
+
+.set-card-outer{
+    border: 2px solid white;
+    margin-bottom: 2px;
+    background-color: white;
+}
+
+.set-card-outer.playing{
+    background: green;
+
+}
+
+
+.set-card-outer.already-played{
+    background: rgb(220, 220, 220);
+
+}
+
+
+.set-card-outer{
+    background-color: lime;
+}
+
+.card-holder-inner{
+    background-color: black;
+}

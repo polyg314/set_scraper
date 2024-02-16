@@ -33,8 +33,10 @@ export const Header = () => {
               </Button>
             ))}
           </Box> */}
-
+          <div style={{position: "fixed", right: "20px"}}>
           <Login />
+            </div>
+          
         </Toolbar>
       </AppBar>
     </div>

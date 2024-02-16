@@ -476,7 +476,8 @@ export const Main = () => {
 
             <Grid container item xs={12} style={{ position: "fixed", top: 76, zIndex: 100 }}>
 
-                <Grid item xs={12} lg={8} style={{ margin: "0 auto", background: "blue", padding: 5 }}>
+                <Grid item xs={12} lg={8}
+                    className="main-video-outer" style={{ margin: "0 auto", background: "#eee", padding: 5 }}>
                     {currentVideo === null &&
                         <>Choose video</>
                     }
@@ -510,7 +511,7 @@ export const Main = () => {
 
                                 </Grid>
 
-                                <Grid item xs={4}>
+                                <Grid item xs={4} className={"like-add-container"}>
                                     <Tooltip
                                         placement="left"
                                         title={!userInfo.accessToken ? "Please Login to Google Account to Like Videos" : "Like on YouTube"}>
@@ -570,9 +571,9 @@ export const Main = () => {
                         background: "#ffe500",
                         paddingBottom: 0
                     }}>
-                    <Grid 
-                        item 
-                        xs={4} 
+                    <Grid
+                        item
+                        xs={4}
                         container
                         className={"sets-songs-buttons-container" + (radioValue === 'SETS' ? " sets" : " songs")}
                     >
@@ -614,12 +615,16 @@ export const Main = () => {
                             </Button>
                         </Grid>
                     </Grid>
+
                     <Grid item xs={6} lg={4}>
-                        <ChannelsSelectWithArrows
-                            Channels={Channels}
-                            currentChannelId={currentChannelId}
-                            handleSetChannelId={handleSetChannelId}
-                        />
+                        {radioValue === 'SETS' &&
+                            <ChannelsSelectWithArrows
+                                Channels={Channels}
+                                currentChannelId={currentChannelId}
+                                handleSetChannelId={handleSetChannelId}
+                            />
+                        }
+
                         {/* <Select
                             fullWidth
                             variant="outlined"
@@ -679,68 +684,66 @@ export const Main = () => {
 
             </Grid>
 
-            <Grid container item style={{ padding: 0, background: "green", marginTop: 426, textAlign: "center" }}>
+            <Grid container className="card-holder-outer" item style={{ padding: 0, marginTop: 426, textAlign: "center" }}>
 
                 {radioValue === 'SETS' &&
-                    <Grid item xs={12} md={8} style={{ margin: "0 auto", background: "beige", paddingBottom: 20 }}>
+                    <Grid className="card-holder-inner" item xs={12} md={8} style={{ margin: "0 auto" }}>
 
                         <Grid item id="youtube-card-holder">
+
                             {channelVideos[currentChannelId] !== undefined &&
 
                                 <>
                                     {channelVideos[currentChannelId].map((video, index) => (
                                         <>
-                                        {getFiltered(video, filter) && 
-                                            <>
-                                             <Grid container key={index} xs={12}>
-                                            {/* {videos.map((video, index) => ( */}
-                                            <Grid item xs={4} md={4}>
-                                                {/* image thumbnail for each of the videos */}
-                                                <img width={"100%"} src={video.snippet.thumbnails.high.url}></img>
+                                            {getFiltered(video, filter) &&
+                                                <>
 
+                                                    <Grid className={"set-card-outer" + (playedSets.includes(video["id"]["videoId"]) ? " already-played" : "") } container key={index} xs={12}>
+                                                        <Grid item xs={1.5}  >
+                                                            {/* image thumbnail for each of the videos */}
+                                                            <img width={"100%"} height={"100%"} src={video.snippet.thumbnails.default.url}></img>
 
-                                            </Grid>
-                                            <Grid item xs={8} md={8}>
-                                                <h2>
-                                                    <a href={`https://www.youtube.com/watch?v=${video.id.videoId}`} target="_blank" rel="noreferrer">
-                                                        {video.snippet.title}
-                                                    </a>
-                                                </h2>
-                                                <p>{video.snippet.description}</p>
-                                                {playedSets.includes(video["id"]["videoId"]) &&
-                                                    <>ALREADY PLAYED</>
-                                                }
-                                                <Button variant="contained"
-                                                    color="secondary"
-                                                    style={{ margin: "0 auto", marginTop: 20 }}
-                                                    // disabled={addedSets.includes(video["id"]["videoId"])}
-                                                    onClick={(e) => handlePlaySet(video)}
-                                                >
-                                                    Play Set
-                                                </Button>
+                                                        </Grid>
+                                                        <Grid item xs={7.5} style={{ textAlign: "left", padding: "0px 5px" }}>
+                                                            <h3>{video.snippet.title}</h3>
+                                                            {playedSets.includes(video["id"]["videoId"]) &&
+                                                                <>ALREADY PLAYED</>
+                                                            }
+                                                        </Grid>
+                                                        <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
+    <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+        <Button variant="contained"
+            color="secondary"
+            style={{ margin: "0 auto", marginTop: 0, fontSize: 12 }} // Adjusted marginTop
+            onClick={(e) => handlePlaySet(video)}
+        >
+            Play Set
+        </Button>
+    </div>
+</Grid>
+<Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
+    <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+        <Button variant="contained"
+            color="secondary"
+            style={{ margin: "0 auto", marginTop: 0, fontSize: 12 }} // Adjusted marginTop
+            disabled={addedSets.includes(video["id"]["videoId"])}
+            onClick={(e) => handleScrapeSet(video)}
+        >
+            {addedSets.includes(video["id"]["videoId"]) ? 'Added' : 'Add Songs'}
+        </Button>
+    </div>
+</Grid>
 
-                                                <Button variant="contained"
-                                                    color="secondary"
-                                                    style={{ margin: "0 auto", marginTop: 20 }}
-                                                    disabled={addedSets.includes(video["id"]["videoId"])}
-                                                    onClick={(e) => handleScrapeSet(video)}
-                                                >
-                                                    {!addedSets.includes(video["id"]["videoId"]) &&
-                                                        <span>Add Songs To Queue</span>
-                                                    }
-
-                                                    {addedSets.includes(video["id"]["videoId"]) &&
-                                                        <span>Added</span>
-                                                    }
-                                                </Button>
-
-                                            </Grid>
-
-                                        </Grid>
-                                            </>
-                                        }
+                                                    </Grid>
+                                                    
+                                                    
+                                                    
+                                                    
+                                                </>
+                                            }
                                         </>
-                                       
+
                                     ))}
 
 
@@ -756,7 +759,7 @@ export const Main = () => {
                     </Grid>
                 }
                 {radioValue === 'SONG QUEUE' &&
-                    <Grid item xs={12} md={8} style={{ margin: "0 auto", background: "orange", paddingBottom: 20 }}>
+                    <Grid  className="card-holder-inner"  item xs={12} md={8} style={{ margin: "0 auto" }}>
 
                         {songVideos.map((video, index) => (
                             <Grid container key={index} xs={12}>
