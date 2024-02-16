@@ -5,7 +5,7 @@ import Login from "./components/Login";
 export const Header = () => {
   return (
     <div>
-      <AppBar component="nav">
+      <AppBar component="nav" style={{boxShadow: "none", background: "transparent"}}>
         <Toolbar
         id={"app-toolbar"}
         style={{textAlign: "left"}}>

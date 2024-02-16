@@ -16,11 +16,12 @@ $theme-black: rgb(10, 10, 10);
 // }
 
 body{
-    background-color: $theme-color-4-light;
+    background-color: $theme-color-4;
 }
 
 #app-toolbar{
-    background-color: $theme-color-4;
+    // background-color: $theme-color-4;
+    // background-color: transparent !important;
     // box-shadow: 0px 0px 0px 0px black;
     // border: none !important;
     color: $theme-color-3;

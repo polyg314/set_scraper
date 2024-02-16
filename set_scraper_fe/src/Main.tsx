@@ -556,7 +556,7 @@ export const Main = () => {
 
             <Grid container item xs={12} style={{ position: "fixed", top: 76, zIndex: 100 }}>
 
-                <Grid item xs={12} lg={8}
+                <Grid item xs={12} lg={8.5}
                     className="main-video-outer" style={{ margin: "0 auto", background: "#eee", padding: 5 }}>
                     {currentVideo === null &&
                         <>Choose video</>
