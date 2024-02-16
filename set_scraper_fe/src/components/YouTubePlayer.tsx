@@ -77,7 +77,7 @@ const YouTubePlayer = (props:any) => {
       // If the player instance exists and the videoId changes
       playerInstanceRef.current.loadVideoById(props.videoId);
     }
-  }, [props.videoId]);
+  }, [props.videoId, props.songVideos, props.channelVideos]);
 
   // Cleanup on component unmount
   useEffect(() => {

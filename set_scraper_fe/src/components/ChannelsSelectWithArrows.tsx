@@ -18,7 +18,7 @@ export const ChannelsSelectWithArrows = ({ Channels, currentChannelId, handleSet
   };
 
   return (
-    <Grid item container xs={12}>
+    <Grid item container xs={12} style={{background: "white"}}>
       <IconButton onClick={() => handleArrowClick('left')}>
         <ArrowBackIosNewIcon />
       </IconButton>

@@ -7,6 +7,7 @@ export const Header = () => {
     <div>
       <AppBar component="nav">
         <Toolbar
+        id={"app-toolbar"}
         style={{textAlign: "center"}}>
           {/* <IconButton
             color="inherit"

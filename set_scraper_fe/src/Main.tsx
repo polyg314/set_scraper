@@ -120,6 +120,14 @@ export const Main = () => {
     }, [currentVideo]); // Update ref whenever `currentVideo` changes
 
 
+    const songVideosRef = useRef(songVideos);
+
+    useEffect(() => {
+        songVideosRef.current = songVideos;
+    }, [songVideos]); // Update ref whenever `currentVideo` changes
+
+
+
     const currentlyPlayingTypeRef = useRef(currentlyPlayingType);
 
     useEffect(() => {
@@ -241,6 +249,7 @@ export const Main = () => {
         }
     };
 
+ 
 
 
 
@@ -305,6 +314,11 @@ export const Main = () => {
 
 
     const [channelVideos, setChannelVideos] = useState({})
+    const channelVideosRef = useRef(channelVideos);
+
+    useEffect(() => {
+        channelVideosRef.current = channelVideos;
+    }, [channelVideos]); // Update ref whenever `currentVideo` changes
 
 
     useEffect(() => {
@@ -356,6 +370,25 @@ export const Main = () => {
         setCurrentVideo(video)
     }
 
+    const handleRemoveSong = (video) => {
+        let allVideosCopy = objectCopy(songVideos)
+        let allIds = allVideosCopy.map((video) => video.id.videoId)
+        console.log(allVideosCopy)
+
+        let index = allIds.indexOf(video.id.videoId)
+        console.log(index)
+        allVideosCopy.splice(index, 1)  
+        //  = [...newVideos, ...songVideos].slice(0, 200);
+        setSongVideos(allVideosCopy);
+        // Update local storage
+        localStorage.setItem('songVideos', JSON.stringify(allVideosCopy));
+        // if(index !== 0){
+        //     handlePlayNext(allVideosCopy[index - 1].id.videoId)
+        // }
+        enqueueSnackbar('Song removed from queue', { variant: 'success' });
+        // let songsCoppy 
+    }
+
 
     // Function to like a video via YouTube API
     const likeVideo = async (accessToken, videoId) => {
@@ -394,16 +427,16 @@ export const Main = () => {
         likeVideo(userInfo.accessToken, videoId);
     };
 
-    const handlePlayPrevious = (videoId) => {
-        for (let i = 0; i < songVideos.length; i++) {
-            if (songVideos[i].id.videoId === videoId) {
-                setCurrentVideo(songVideos[i - 1])
-                return
-            }
-        }
-        setCurrentVideo(songVideos[0])
+    // const handlePlayPrevious = (videoId) => {
+    //     // for (let i = 0; i < songVideos.length; i++) {
+    //     //     if (songVideos[i].id.videoId === videoId) {
+    //     //         setCurrentVideo(songVideos[i - 1])
+    //     //         return
+    //     //     }
+    //     // }
+    //     // setCurrentVideo(songVideos[0])
 
-    }
+    // }
 
     const getPreviousDisabled = () => {
         var disabled = false
@@ -416,41 +449,88 @@ export const Main = () => {
         return disabled
     }
 
+    const handlePlayPrevious = () => {
+        console.log("PLAYaaaaa")
+        if (!getPreviousDisabled()) {
+            console.log("DIS")
+            if (currentlyPlayingTypeRef.current === 'SETS') {
+                console.log("setssss")
+                for (let i = 1; i < channelVideosRef.current[currentVideoRef.current.snippet.channelId].length; i++) {
+                    if (channelVideosRef.current[currentVideoRef.current.snippet.channelId][i].id.videoId === currentVideoRef.current.id.videoId) {
+                        setCurrentVideo(channelVideosRef.current[currentVideoRef.current.snippet.channelId][i - 1])
+                        return
+                    }
+                }
+                // setCurrentVideo(channelVideos[currentChannelId][0])
+            }
+            else {
+                console.log("ummm")
+                for (let i = 1; i < songVideosRef.current.length; i++) {
+                    console.log(songVideosRef.current[i].id.videoId)
+                    console.log(currentVideoRef.current.id.videoId)
+                    if (songVideosRef.current[i].id.videoId === currentVideoRef.current.id.videoId) {
+                        setCurrentVideo(songVideosRef.current[i - 1])
+                        return
+                    }
+                }
+                // setCurrentVideo(songVideos[0])
+            }
+        }
+        else{
+            console.log("NEXT IS DIS")
+            return
+        }
+
+
+    }
+
     const getNextDisabled = () => {
 
         var disabled = false
-        if (currentlyPlayingType === 'SETS') {
+        if (currentlyPlayingTypeRef.current === 'SETS') {
             disabled = channelVideos[currentChannelId].map((video) => video.id.videoId).indexOf(currentVideo.id.videoId) === (channelVideos[currentChannelId].length - 1) || channelVideos[currentChannelId].length === 0
         }
         else {
+
             disabled = songVideos.map((video) => video.id.videoId).indexOf(currentVideo.id.videoId) === (songVideos.length - 1) || songVideos.length === 0
         }
+        console.log("DIISSS")
+        console.log(disabled)
         return disabled
     }
 
 
-    const handlePlayNext = (videoId) => {
+    const handlePlayNext = () => {
+        console.log("PLAYaaaaa")
         if (!getNextDisabled()) {
+            console.log("DIS")
             if (currentlyPlayingTypeRef.current === 'SETS') {
-                for (let i = 0; i < channelVideos[currentChannelId].length; i++) {
-                    if (channelVideos[currentChannelId][i].id.videoId === videoId) {
-                        setCurrentVideo(channelVideos[currentChannelId][i + 1])
+                console.log("setssss")
+                for (let i = 0; i < channelVideosRef.current[currentVideoRef.current.snippet.channelId].length; i++) {
+                    if (channelVideosRef.current[currentVideoRef.current.snippet.channelId][i].id.videoId === currentVideoRef.current.id.videoId) {
+                        setCurrentVideo(channelVideosRef.current[currentVideoRef.current.snippet.channelId][i + 1])
                         return
                     }
                 }
-                setCurrentVideo(channelVideos[currentChannelId][0])
+                // setCurrentVideo(channelVideos[currentChannelId][0])
             }
             else {
-                for (let i = 0; i < songVideos.length; i++) {
-                    if (songVideos[i].id.videoId === videoId) {
-                        setCurrentVideo(songVideos[i + 1])
+                console.log("ummm")
+                for (let i = 0; i < songVideosRef.current.length; i++) {
+                    console.log(songVideosRef.current[i].id.videoId)
+                    console.log(currentVideoRef.current.id.videoId)
+                    if (songVideosRef.current[i].id.videoId === currentVideoRef.current.id.videoId) {
+                        setCurrentVideo(songVideosRef.current[i + 1])
                         return
                     }
                 }
-                setCurrentVideo(songVideos[0])
+                // setCurrentVideo(songVideos[0])
             }
         }
-        else return
+        else{
+            console.log("NEXT IS DIS")
+            return
+        }
 
 
     }
@@ -488,6 +568,8 @@ export const Main = () => {
 
                                 <>
                                     <YouTubePlayer
+                                        songVideos={songVideos}
+                                        channelVideos={channelVideos}
                                         handlePlayNext={handlePlayNext}
                                         addId={addId}
                                         // radioValue={radioValue}
@@ -504,7 +586,7 @@ export const Main = () => {
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        onClick={(e) => handlePlayPrevious(currentVideo.id.videoId)}
+                                        onClick={(e) => handlePlayPrevious()}
                                         disabled={getPreviousDisabled()}>
                                         Previous {currentlyPlayingType === 'SETS' ? "Set" : "Song"}
                                     </Button>
@@ -548,7 +630,7 @@ export const Main = () => {
                                     <Button
                                         variant="contained"
                                         color="primary"
-                                        onClick={(e) => handlePlayNext(currentVideo.id.videoId)}
+                                        onClick={(e) => handlePlayNext()}
                                         disabled={getNextDisabled()}>
                                         Next  {currentlyPlayingType === 'SETS' ? "Set" : "Song"}
                                     </Button>
@@ -568,7 +650,7 @@ export const Main = () => {
                 <Grid item container xs={12} lg={8}
                     style={{
                         margin: "0 auto",
-                        background: "#ffe500",
+                        // background: "#ffe500",
                         paddingBottom: 0
                     }}>
                     <Grid
@@ -699,7 +781,7 @@ export const Main = () => {
                                             {getFiltered(video, filter) &&
                                                 <>
 
-                                                    <Grid className={"set-card-outer" + (playedSets.includes(video["id"]["videoId"]) ? " already-played" : "") } container key={index} xs={12}>
+                                                    <Grid className={"set-card-outer" + (playedSets.includes(video["id"]["videoId"]) ? " already-played" : "")  + (currentVideo.id.videoId === video.id.videoId ? " playing" : "")} container key={index} xs={12}>
                                                         <Grid item xs={1.5}  >
                                                             {/* image thumbnail for each of the videos */}
                                                             <img width={"100%"} height={"100%"} src={video.snippet.thumbnails.default.url}></img>
@@ -712,34 +794,36 @@ export const Main = () => {
                                                             }
                                                         </Grid>
                                                         <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
-    <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
-        <Button variant="contained"
-            color="secondary"
-            style={{ margin: "0 auto", marginTop: 0, fontSize: 12 }} // Adjusted marginTop
-            onClick={(e) => handlePlaySet(video)}
-        >
-            Play Set
-        </Button>
-    </div>
-</Grid>
-<Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
-    <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
-        <Button variant="contained"
-            color="secondary"
-            style={{ margin: "0 auto", marginTop: 0, fontSize: 12 }} // Adjusted marginTop
-            disabled={addedSets.includes(video["id"]["videoId"])}
-            onClick={(e) => handleScrapeSet(video)}
-        >
-            {addedSets.includes(video["id"]["videoId"]) ? 'Added' : 'Add Songs'}
-        </Button>
-    </div>
-</Grid>
+                                                            <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                                                                <Button variant="contained"
+                                                                fullWidth
+                                                                    color="secondary"
+                                                                    style={{ margin: "0 auto", marginTop: 0, fontSize: 12 }} // Adjusted marginTop
+                                                                    onClick={(e) => handlePlaySet(video)}
+                                                                >
+                                                                    Play Set
+                                                                </Button>
+                                                            </div>
+                                                        </Grid>
+                                                        <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                                            <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                                                                <Button variant="contained"
+                                                                    color="secondary"
+                                                                    fullWidth
+                                                                    style={{ margin: "0 auto", marginTop: 0, fontSize: 12 }} // Adjusted marginTop
+                                                                    disabled={addedSets.includes(video["id"]["videoId"])}
+                                                                    onClick={(e) => handleScrapeSet(video)}
+                                                                >
+                                                                    {addedSets.includes(video["id"]["videoId"]) ? 'Added' : 'Add Songs'}
+                                                                </Button>
+                                                            </div>
+                                                        </Grid>
 
                                                     </Grid>
-                                                    
-                                                    
-                                                    
-                                                    
+
+
+
+
                                                 </>
                                             }
                                         </>
@@ -759,31 +843,51 @@ export const Main = () => {
                     </Grid>
                 }
                 {radioValue === 'SONG QUEUE' &&
-                    <Grid  className="card-holder-inner"  item xs={12} md={8} style={{ margin: "0 auto" }}>
+                    <Grid className="card-holder-inner" item xs={12} md={8} style={{ margin: "0 auto" }}>
 
                         {songVideos.map((video, index) => (
-                            <Grid container key={index} xs={12}>
-                                {/* {videos.map((video, index) => ( */}
-                                <Grid item xs={4} md={4}>
-                                    <img src={video.snippet.thumbnails.default.url}>
-
-                                    </img>
-
+                            
+                            <>
+                            <Grid className={"song-card-outer" + (playedSongs.includes(video["id"]["videoId"]) ? " already-played" : "") + (currentVideo.id.videoId === video.id.videoId ? " playing" : "")} container key={index} xs={12}>
+                                <Grid item xs={1}  >
+                                    {/* image thumbnail for each of the videos */}
+                                    <img width={"100%"} height={"100%"} src={video.snippet.thumbnails.default.url}></img>
 
                                 </Grid>
-                                <Grid item xs={8} md={8}>
-                                    <h2>
-                                        <a href={`https://www.youtube.com/watch?v=${video.id}`} target="_blank" rel="noreferrer">
-                                            {video.snippet.title}
-                                        </a>
-                                    </h2>
-                                    <p>{video.snippet.description}</p>
+                                <Grid item xs={3.5} style={{ textAlign: "left", padding: "0px 5px" }}>
+                                    <h3 style={{margin: "5px 0px"}}>{video.snippet.title}</h3>
 
+                                    {/* {playedSongs.includes(video["id"]["videoId"]) &&
+                                    <div style={{margin: "5px 0px"}}>
+                                        Already Played
+                                    </div>
+                                    } */}
+
+                                    {/* <h5>{video["setId"]}</h5> */}
+                                   
+                                </Grid>
+                                <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                    <div style={{ textAlign: "left"}}>
+                                    {/* {video["setName"]} */}
+                                    {/* <h5>{video["channelId"]}</h5> */}
+                                    {video["channelName"]}
+                                    </div>
+                                </Grid>
+                                <Grid item xs={2.5} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                    <div style={{ textAlign: "left"}}>
+                                    {video["setName"]}
+                                    {/* <h5>{video["channelId"]}</h5> */}
+                                    {/* {video["channelName"]} */}
+                                    </div>
+                                </Grid>
+                                <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                    <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
                                     <Button variant="contained"
                                         color="secondary"
-                                        style={{ margin: "0 auto", marginTop: 20 }}
+                                        style={{ margin: "0 auto", marginTop: 0 }}
                                         disabled={currentVideo.id.videoId === video.id.videoId}
                                         onClick={(e) => handlePlaySong(video)}
+                                        fullWidth
                                     >
                                         {currentVideo.id.videoId === video.id.videoId &&
                                             <>Playing...</>
@@ -797,18 +901,44 @@ export const Main = () => {
                                         {/* {playedSongs.join(", ")} */}
 
                                     </Button>
-                                    {playedSongs.includes(video["id"]["videoId"]) &&
-                                        <><h3>ALREADY PLAYED</h3></>
-                                    }
-
-                                    <h5>{video["setId"]}</h5>
-                                    <h5>{video["setName"]}</h5>
-                                    <h5>{video["channelId"]}</h5>
-                                    <h5>{video["channelName"]}</h5>
-
+                                    </div>
                                 </Grid>
+                                <Grid item xs={1} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                    <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Button variant="contained"
+                                        color="secondary"
+                                        style={{ margin: "0 auto", marginTop: 0 }}
+                                        // disabled={currentVideo.id.videoId === video.id.videoId}
+                                        // onClick={(e) => handlePlaySong(video)}
+                                        fullWidth
+                                    >
+                                        Like
+                                    </Button>
+                                    </div>
+                                </Grid>
+                                <Grid item xs={1} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                    <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Button variant="contained"
+                                        color="secondary"
+                                        style={{ margin: "0 auto", marginTop: 0 }}
+                                        // disabled={currentVideo.id.videoId === video.id.videoId}
+                                        onClick={(e) => handleRemoveSong(video)}
+                                          
+                                        fullWidth
+                                    >
+                                        Remove
+                                    </Button>
+                                    </div>
+                                </Grid>
+                                
+                                
 
                             </Grid>
+
+
+
+                            
+                            </>
                         ))}
 
                     </Grid>

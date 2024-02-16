@@ -1,11 +1,27 @@
 
-$song-theme: hotpink;
-$set-theme: yellow;
+$song-theme: rgb(255, 12, 239);
+$song-theme-light: #fbedf4;
 $song-theme-dark: darkmagenta;
+$set-theme: rgb(17, 255, 0);
+$set-theme-light: #e2ffe2; 
+$theme-color-3: #eaff00;
+// $theme-color-4: rgb(255, 12, 239);/
+
+
+$theme-black: rgb(10, 10, 10);
 // body{
+
 //     background-color: yellow;
 // }
 
+body{
+    background-color: $theme-black;
+}
+
+#app-toolbar{
+    background-color: $theme-black;
+    color: $theme-color-3
+}
 
 .sets-songs-button{
     background-color: blue;
@@ -16,20 +32,20 @@ $song-theme-dark: darkmagenta;
 }
 
 .sets-songs-button{
-    color: black !important;
+    color: $theme-black !important;
 }
 
 .sets-songs-button.active{
-    background-color: lime;
-    color: black !important;
+    background-color: $set-theme;
+    color: $theme-black !important;
 }
 
 .current-channel-button.sets:hover{
     background-color: rgb(0, 174, 0) !important;
 }
 .current-channel-button.active{
-    background-color: lime;
-    color: black;
+    background-color: $set-theme;
+    color: $theme-black;
 }
 
 .sets-songs-button.songs:hover{
@@ -37,12 +53,12 @@ $song-theme-dark: darkmagenta;
 }
 
 .sets-songs-buttons-container.sets{
-      /* Create a linear gradient from lime green to white */
-    background: linear-gradient(to right, limegreen 49%, white 51%) !important;
+      /* Create a linear gradient from $set-theme green to white */
+    background: linear-gradient(to right, $set-theme 49%, white 51%) !important;
 
     /* Ensure the gradient covers the entire container */
     background-size: cover;
-    // background-color: lime !important;
+    // background-color: $set-theme !important;
 }
 
 .sets-songs-buttons-container.songs{
@@ -50,7 +66,7 @@ $song-theme-dark: darkmagenta;
 
     /* Ensure the gradient covers the entire container */
     background-size: cover;
-    // background-color: lime !important;
+    // background-color: $set-theme !important;
 }
 
 // /* Keyframes for the wave effect */
@@ -59,7 +75,7 @@ $song-theme-dark: darkmagenta;
 //         background-color: transparent;
 //     }
 //     50% {
-//         background-color: lime;
+//         background-color: $set-theme;
 //     }
 // }
 
@@ -75,28 +91,38 @@ $song-theme-dark: darkmagenta;
 // }
 
 
-.set-card-outer{
+
+
+.set-card-outer, .song-card-outer{
     border: 2px solid white;
     margin-bottom: 2px;
     background-color: white;
 }
 
-.set-card-outer.playing{
-    background: green;
-
+.set-card-outer.playing, .song-card-outer.playing{
+    background: $theme-color-3 !important;
 }
 
 
-.set-card-outer.already-played{
-    background: rgb(220, 220, 220);
 
+
+.set-card-outer.already-played, .song-card-outer.already-played{
+    background: rgb(220, 220, 220);
+    border: 2px solid grey;
 }
 
 
 .set-card-outer{
-    background-color: lime;
+    border: 2px solid $set-theme;
 }
 
+.song-card-outer{
+    border: 2px solid $song-theme;
+}
+// .song-card-outer{
+//     background-color: $song-theme-light;
+// }
+
 .card-holder-inner{
-    background-color: black;
+    background-color: $theme-black;
 }
