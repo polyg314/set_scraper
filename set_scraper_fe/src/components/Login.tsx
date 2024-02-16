@@ -81,9 +81,10 @@ const Login = () => {
     <button 
         onClick={() => login()} 
         style={{
-            backgroundColor: '#4285F4', 
+            // backgroundColor: '#4285F4', 
+            background: "transparent",
             color: 'white', 
-            border: 'none', 
+            border: "1px solid cyan", 
             borderRadius: '4px', 
             padding: '10px 24px', 
             cursor: 'pointer', 
@@ -92,15 +93,16 @@ const Login = () => {
             fontSize: '16px',
             boxShadow: '0 2px 4px 0 rgba(0,0,0,0.25)'
         }}>
-        Login with Google
+        LOGIN
     </button>
 ) : (
     <button 
         onClick={signOut} 
         style={{
-            backgroundColor: '#DB4437', 
+            // backgroundColor: '#DB4437', 
+            background: "transparent",
             color: 'white', 
-            border: 'none', 
+            border: "1px solid pink", 
             borderRadius: '4px', 
             padding: '10px 24px', 
             cursor: 'pointer', 
@@ -109,7 +111,7 @@ const Login = () => {
             fontSize: '16px',
             boxShadow: '0 2px 4px 0 rgba(0,0,0,0.25)'
         }}>
-        Logout
+        LOGOUT
     </button>
 )}
 

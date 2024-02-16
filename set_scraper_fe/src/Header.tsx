@@ -8,7 +8,7 @@ export const Header = () => {
       <AppBar component="nav">
         <Toolbar
         id={"app-toolbar"}
-        style={{textAlign: "center"}}>
+        style={{textAlign: "left"}}>
           {/* <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -19,13 +19,13 @@ export const Header = () => {
             <MenuIcon />
           </IconButton> */}
           <Typography
-            style={{margin: "0 auto", fontWeight: "bold"}}
+            style={{ fontWeight: "bold"}}
             variant="h2"
             
             // component="div"
             // sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            SET SCRAPER
+            THE DOWNLOAD
           </Typography>
           {/* <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (

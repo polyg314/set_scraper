@@ -698,7 +698,7 @@ export const Main = () => {
                         </Grid>
                     </Grid>
 
-                    <Grid item xs={6} lg={4}>
+                    <Grid item xs={6} lg={4} style={{background: "white"}}>
                         {radioValue === 'SETS' &&
                             <ChannelsSelectWithArrows
                                 Channels={Channels}

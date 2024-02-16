@@ -5,7 +5,8 @@ $song-theme-dark: darkmagenta;
 $set-theme: rgb(17, 255, 0);
 $set-theme-light: #e2ffe2; 
 $theme-color-3: #eaff00;
-// $theme-color-4: rgb(255, 12, 239);/
+$theme-color-4: rgb(49, 0, 70);
+$theme-color-4-light: rgb(253 249 255);
 
 
 $theme-black: rgb(10, 10, 10);
@@ -15,12 +16,14 @@ $theme-black: rgb(10, 10, 10);
 // }
 
 body{
-    background-color: $theme-black;
+    background-color: $theme-color-4-light;
 }
 
 #app-toolbar{
-    background-color: $theme-black;
-    color: $theme-color-3
+    background-color: $theme-color-4;
+    // box-shadow: 0px 0px 0px 0px black;
+    // border: none !important;
+    color: $theme-color-3;
 }
 
 .sets-songs-button{
