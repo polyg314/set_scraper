@@ -4,7 +4,7 @@ import Radio from '@mui/material/Radio';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import RadioGroup from '@mui/material/RadioGroup';
-import { Header } from "./Header";
+import { Header } from "./components/Header";
 import axios from 'axios';
 import { Button, Select, TextField, Toolbar, Tooltip } from "@material-ui/core";
 import { API_URL, Channels } from "./utils/constants";
@@ -19,6 +19,7 @@ import { MenuItem, IconButton } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { ChannelsSelectWithArrows } from "./components/ChannelsSelectWithArrows";
+import Login from "./components/Login";
 
 interface Video {
     id: {
@@ -80,15 +81,13 @@ export const Main = () => {
 
     const [playedSets, setPlayedSets] = useState(() => {
         const storedSets = localStorage.getItem('playedSets');
-        console.log("played sets")
-        console.log(storedSets)
+
         return storedSets ? JSON.parse(storedSets) : [];
     });
 
     const [addedSets, setAddedSets] = useState(() => {
         const storedSets = localStorage.getItem('addedSets');
-        console.log("played sets")
-        console.log(storedSets)
+
         return storedSets ? JSON.parse(storedSets) : [];
     });
 
@@ -249,7 +248,7 @@ export const Main = () => {
         }
     };
 
- 
+
 
 
 
@@ -377,7 +376,7 @@ export const Main = () => {
 
         let index = allIds.indexOf(video.id.videoId)
         console.log(index)
-        allVideosCopy.splice(index, 1)  
+        allVideosCopy.splice(index, 1)
         //  = [...newVideos, ...songVideos].slice(0, 200);
         setSongVideos(allVideosCopy);
         // Update local storage
@@ -476,7 +475,7 @@ export const Main = () => {
                 // setCurrentVideo(songVideos[0])
             }
         }
-        else{
+        else {
             console.log("NEXT IS DIS")
             return
         }
@@ -527,7 +526,7 @@ export const Main = () => {
                 // setCurrentVideo(songVideos[0])
             }
         }
-        else{
+        else {
             console.log("NEXT IS DIS")
             return
         }
@@ -555,13 +554,13 @@ export const Main = () => {
             <Header />
 
             {currentVideo &&
-            <>
-            <Grid container item xs={12} lg={5.5} className="main-video-outer-wrapper" style={{ position: "fixed", zIndex: 100, padding: 20 }}>
+                <>
+                    <Grid container item xs={12} lg={5.5} className="main-video-outer-wrapper" style={{ position: "fixed", zIndex: 100, padding: 20 }}>
 
-                <Grid item xs={12}
-                    className="main-video-outer" style={{ margin: "0 auto", padding: 5 }}>
+                        <Grid item xs={12}
+                            className="main-video-outer" style={{ margin: "0 auto", padding: 5 }}>
 
-                        
+
 
                             <Grid item xs={12}>
 
@@ -579,8 +578,8 @@ export const Main = () => {
 
                             </Grid>
 
-                </Grid>
-                <Grid xs={12} item container className="video-buttons-container">
+                        </Grid>
+                        <Grid xs={12} item container className="video-buttons-container">
                             <Grid container item xs={12} style={{ padding: 5 }}>
                                 <Grid item xs={3} style={{ textAlign: "left", paddingLeft: 0 }} className="video-button-container-inner">
                                     <Button
@@ -595,7 +594,7 @@ export const Main = () => {
 
                                 </Grid>
 
-                                <Grid item xs={3} className={"like-add-container video-button-container-inner"} style={{margin: "0 auto"}}>
+                                <Grid item xs={currentlyPlayingType === 'SETS' ? 3 : 6} className={"like-add-container video-button-container-inner"}>
 
                                     <Tooltip
                                         placement="left"
@@ -612,13 +611,14 @@ export const Main = () => {
                                         </Button>
                                     </Tooltip>
                                 </Grid>
+                                {currentlyPlayingType === 'SETS' &&
+
                                 <Grid item xs={3} className={"like-add-container video-button-container-inner"}>
-                                    {currentlyPlayingType === 'SETS' &&
                                         <Button variant="contained"
                                             className={"video-button"}
                                             fullWidth
                                             // color="secondary"
-                                            style={{ }}
+                                            style={{}}
                                             disabled={addedSets.includes(currentVideo["id"]["videoId"])}
                                             onClick={(e) => handleScrapeSet(currentVideo)}
                                         >
@@ -631,14 +631,15 @@ export const Main = () => {
                                             }
                                         </Button>
 
-                                    }
                                 </Grid>
+                                                                    }
+
 
 
                                 <Grid item xs={3} style={{ textAlign: "right", paddingRight: 0 }} className="video-button-container-inner">
                                     <Button
-                                    className={"video-button"}
-                                    fullWidth
+                                        className={"video-button"}
+                                        fullWidth
                                         // variant="contained"
                                         // color="primary"
                                         onClick={(e) => handlePlayNext()}
@@ -652,15 +653,15 @@ export const Main = () => {
 
 
 
-                        
-                    
 
-                </Grid>
 
-                {/* </Grid> */}
-              
 
-                {/* 
+                        </Grid>
+
+                        {/* </Grid> */}
+
+
+                        {/* 
                 {radioValue === 'SETS' &&
                     <Grid item container xs={12} lg={8} style={{ margin: "0 auto", background: "#ffe500", paddingBottom: 0 }}>
                         {Channels.map((channel, index) => (
@@ -688,286 +689,299 @@ export const Main = () => {
                 }
  */}
 
-            </Grid>
-            </>
+                    </Grid>
+                </>
             }
-            <Grid item container xs={12} lg={6.5}
-                    style={{
-                        margin: "0 auto",
-                        // background: "#ffe500",
-                        paddingBottom: 0,
-                        position: "fixed",
-                        top: 76,
-                        right: 0,
-                        padding: 20
-                    }}>
-                    <Grid
-                        item
-                        xs={4}
-                        container
-                        className={"sets-songs-buttons-container" + (radioValue === 'SETS' ? " sets" : " songs")}
-                    >
-                        <Grid item xs={6} lg={6}>
-                            <Button
-                                fullWidth
-                                variant="contained"
-                                style={{
-                                    backgroundColor: "transparent",
-                                    padding: 8,
-                                    borderRadius: 0,
-                                    border: "none"
-                                }}
-                                color="primary"
-                                value="SETS"
-                                onClick={(e) => handleRadioChange("SETS")}
-                                className={"sets-songs-button sets " + (radioValue === 'SETS' ? "active" : "")}
-                            >
-                                <b>SETS</b>
-                            </Button>
-                        </Grid>
-                        <Grid item xs={6} lg={6}>
-                            <Button
-                                fullWidth
-                                style={{
-                                    backgroundColor: "transparent",
-                                    padding: 8,
-                                    borderRadius: 0,
-                                    border: "none"
-                                }}
+            {/* <Grid item container xs={12} lg={6.5}
+                style={{
+                    margin: "0 auto",
+                    // background: "#ffe500",
+                    paddingBottom: 0,
+                    position: "fixed",
+                    top: 76,
+                    right: 0,
+                    padding: 20
+                }}> */}
+                {/* <Grid
+                    item
+                    xs={4}
+                    container
+                    className={"sets-songs-buttons-container" + (radioValue === 'SETS' ? " sets" : " songs")}
+                > */}
+                    
+                {/* </Grid> */}
 
-                                variant="contained"
-                                color="primary"
-                                value="SONG QUEUE"
-                                onClick={(e) => handleRadioChange("SONG QUEUE")}
-                                className={"sets-songs-button songs " + (radioValue === 'SONG QUEUE' ? "active" : "")}
-                            >
-                                <b>SONG QUEUE</b>
-                            </Button>
-                        </Grid>
-                    </Grid>
+               
 
-                    <Grid item xs={6} lg={4} style={{background: "white"}}>
-                        {radioValue === 'SETS' &&
-                            <ChannelsSelectWithArrows
-                                Channels={Channels}
-                                currentChannelId={currentChannelId}
-                                handleSetChannelId={handleSetChannelId}
-                            />
-                        }
+            {/* </Grid> */}
+            <Grid container justifyContent="flex-end" xs={12}>
+                
+            <Grid item container sm={12} md={6.5} id="main-content-outer">
+            <Grid item style={{position: "fixed", left: 20, bottom: 26}}>
+                <Login />
+                </Grid>
+                <Grid item container xs={12} id="main-content-control-panel-outer"> 
+                <Grid item container xs={12} id="main-content-control-panel-inner"> 
 
-                        {/* <Select
+                <Grid item xs={6} lg={6}>
+                        <Button
                             fullWidth
-                            variant="outlined"
+                            variant="contained"
+                            style={{
+                                backgroundColor: "transparent",
+                                padding: 8,
+                                borderRadius: 0,
+                                border: "none"
+                            }}
                             color="primary"
-                            value={currentChannelId}
-                            onChange={(e) => handleSetChannelId(e.target.value)}
-                            style={{backgroundColor: "white"}}
-                            className={"current-channel-select"}>
-                            {Channels.map((channel, index) => (
-                                <option value={channel["channelId"]}>{channel["channelName"]}</option>
-                            ))}
-                        </Select> */}
+                            value="SETS"
+                            onClick={(e) => handleRadioChange("SETS")}
+                            className={"sets-songs-button sets " + (radioValue === 'SETS' ? "active" : "")}
+                        >
+                            <b>SETS</b>
+                        </Button>
                     </Grid>
-                    <Grid item xs={6} lg={4}>
-                        <TextField
+                    <Grid item xs={6} lg={6}>
+                        <Button
                             fullWidth
-                            onChange={(e) => handleSetFilter(e)}
-                            variant="outlined"
+                            style={{
+                                backgroundColor: "transparent",
+                                padding: 8,
+                                borderRadius: 0,
+                                border: "none"
+                            }}
+
+                            variant="contained"
                             color="primary"
-                            value={filter}
-                            placeholder={"Filter"}
-                            style={{ backgroundColor: "white" }}
-                            size="small"
-                            className={"search-bar"} />
+                            value="SONG QUEUE"
+                            onClick={(e) => handleRadioChange("SONG QUEUE")}
+                            className={"sets-songs-button songs " + (radioValue === 'SONG QUEUE' ? "active" : "")}
+                        >
+                            <b>SONGS</b>
+                        </Button>
                     </Grid>
+                    <Grid item container xs={12} style={{padding: "10px 10px 20px 10px"}}>
+
+                    <Grid item id={"channel-switcher-outer-wrapper"} xs={6} lg={6} style={{ background: "transparent" }}>
+                    {radioValue === 'SETS' &&
+                        <ChannelsSelectWithArrows
+                            Channels={Channels}
+                            currentChannelId={currentChannelId}
+                            handleSetChannelId={handleSetChannelId}
+                        />
+                    }
 
                 </Grid>
+                <Grid item id="search-filter-bar-outer" xs={6} lg={radioValue === 'SETS' ? 6 : 12} style={{
+    paddingLeft: radioValue === 'SETS' ? '5px' : '0px',
+    paddingRight: '0px',
+    paddingTop: '0px',
+    paddingBottom: '0px'
+  }}>
+                    <TextField
+                        fullWidth
+                        onChange={(e) => handleSetFilter(e)}
+                        variant="outlined"
+                        color="primary"
+                        value={filter}
+                        placeholder={"Filter"}
+                        style={{  }}
+                        size="small"
+                        className={"search-filter-bar"} />
+                </Grid>
+                </Grid>
+                </Grid>
+                </Grid>
+                <Grid container className="card-holder-outer" justifyContent="flex-end" item style={{  }}>
 
-
-            <Grid container className="card-holder-outer"  justifyContent="flex-end" item style={{ padding: 0, marginTop: 140}}>
-
-                {radioValue === 'SETS' &&
-                    <Grid className="card-holder-inner" item xs={12} md={6.5} 
-                        style={{ 
-                            // margin: "0 auto", 
-                            padding: 20,
-                            background: "transparent",
+                    
+                    {radioValue === 'SETS' &&
+                        <Grid className="card-holder-inner sets" item xs={12}
+                            style={{
+                                // margin: "0 auto", 
+                                // padding: 20,
+                                background: "transparent",
                             }}
                         >
 
-                        <Grid item id="youtube-card-holder">
+                            <Grid item id="youtube-card-holder">
 
-                            {channelVideos[currentChannelId] !== undefined &&
+                                {channelVideos[currentChannelId] !== undefined &&
 
-                                <>
-                                    {channelVideos[currentChannelId].map((video, index) => (
-                                        <>
-                                            {getFiltered(video, filter) &&
-                                                <>
+                                    <>
+                                        {channelVideos[currentChannelId].map((video, index) => (
+                                            <>
+                                                {getFiltered(video, filter) &&
+                                                    <>
 
-                                                    <Grid className={"set-card-outer" + (playedSets.includes(video["id"]["videoId"]) ? " already-played" : "")  + (currentVideo.id.videoId === video.id.videoId ? " playing" : "")} container key={index} xs={12}>
-                                                        <Grid item xs={1.5}  >
-                                                            {/* image thumbnail for each of the videos */}
-                                                            <img width={"100%"} height={"100%"} src={video.snippet.thumbnails.default.url}></img>
+                                                        <Grid className={"set-card-outer" + (playedSets.includes(video["id"]["videoId"]) ? " already-played" : "") + (currentVideo.id.videoId === video.id.videoId ? " playing" : "")} container key={index} xs={12}>
+                                                            <Grid item xs={1.5}  >
+                                                                {/* image thumbnail for each of the videos */}
+                                                                <img width={"100%"} height={"100%"} src={video.snippet.thumbnails.default.url}></img>
+
+                                                            </Grid>
+                                                            <Grid item xs={7.5} style={{ textAlign: "left", padding: "0px 5px" }}>
+                                                                <h3>{video.snippet.title}</h3>
+                                                                {/* {playedSets.includes(video["id"]["videoId"]) &&
+                                                                    <>ALREADY PLAYED</>
+                                                                } */}
+                                                            </Grid>
+                                                            <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                                                <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                                                                    <Button variant="contained"
+                                                                        fullWidth
+                                                                        className="card-button"
+                                                                        // color="secondary"
+                                                                        style={{ margin: "0 auto", marginTop: 0, fontSize: 12 }} // Adjusted marginTop
+                                                                        onClick={(e) => handlePlaySet(video)}
+                                                                    >
+                                                                        Play Set
+                                                                    </Button>
+                                                                </div>
+                                                            </Grid>
+                                                            <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                                                <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                                                                    <Button variant="contained"
+                                                                        // color="secondary"
+                                                                        className="card-button"
+                                                                        fullWidth
+                                                                        style={{ margin: "0 auto", marginTop: 0, fontSize: 12 }} // Adjusted marginTop
+                                                                        disabled={addedSets.includes(video["id"]["videoId"])}
+                                                                        onClick={(e) => handleScrapeSet(video)}
+                                                                    >
+                                                                        {addedSets.includes(video["id"]["videoId"]) ? 'Added' : 'Add Songs'}
+                                                                    </Button>
+                                                                </div>
+                                                            </Grid>
 
                                                         </Grid>
-                                                        <Grid item xs={7.5} style={{ textAlign: "left", padding: "0px 5px" }}>
-                                                            <h3>{video.snippet.title}</h3>
-                                                            {playedSets.includes(video["id"]["videoId"]) &&
-                                                                <>ALREADY PLAYED</>
-                                                            }
-                                                        </Grid>
-                                                        <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
-                                                            <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
-                                                                <Button variant="contained"
-                                                                fullWidth
-                                                                    color="secondary"
-                                                                    style={{ margin: "0 auto", marginTop: 0, fontSize: 12 }} // Adjusted marginTop
-                                                                    onClick={(e) => handlePlaySet(video)}
-                                                                >
-                                                                    Play Set
-                                                                </Button>
-                                                            </div>
-                                                        </Grid>
-                                                        <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
-                                                            <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
-                                                                <Button variant="contained"
-                                                                    color="secondary"
-                                                                    fullWidth
-                                                                    style={{ margin: "0 auto", marginTop: 0, fontSize: 12 }} // Adjusted marginTop
-                                                                    disabled={addedSets.includes(video["id"]["videoId"])}
-                                                                    onClick={(e) => handleScrapeSet(video)}
-                                                                >
-                                                                    {addedSets.includes(video["id"]["videoId"]) ? 'Added' : 'Add Songs'}
-                                                                </Button>
-                                                            </div>
-                                                        </Grid>
-
-                                                    </Grid>
 
 
 
 
-                                                </>
-                                            }
-                                        </>
+                                                    </>
+                                                }
+                                            </>
 
-                                    ))}
-
-
-
-
-                                </>
-                            }
-
-                        </Grid>
+                                        ))}
 
 
 
-                    </Grid>
-                }
-                {radioValue === 'SONG QUEUE' &&
-                    <Grid className="card-holder-inner" item xs={12} md={8} style={{ margin: "0 auto" }}>
 
-                        {songVideos.map((video, index) => (
-                            
-                            <>
-                            <Grid className={"song-card-outer" + (playedSongs.includes(video["id"]["videoId"]) ? " already-played" : "") + (currentVideo.id.videoId === video.id.videoId ? " playing" : "")} container key={index} xs={12}>
-                                <Grid item xs={1}  >
-                                    {/* image thumbnail for each of the videos */}
-                                    <img width={"100%"} height={"100%"} src={video.snippet.thumbnails.default.url}></img>
-
-                                </Grid>
-                                <Grid item xs={3.5} style={{ textAlign: "left", padding: "0px 5px" }}>
-                                    <h3 style={{margin: "5px 0px"}}>{video.snippet.title}</h3>
-
-                                    {/* {playedSongs.includes(video["id"]["videoId"]) &&
-                                    <div style={{margin: "5px 0px"}}>
-                                        Already Played
-                                    </div>
-                                    } */}
-
-                                    {/* <h5>{video["setId"]}</h5> */}
-                                   
-                                </Grid>
-                                <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
-                                    <div style={{ textAlign: "left"}}>
-                                    {/* {video["setName"]} */}
-                                    {/* <h5>{video["channelId"]}</h5> */}
-                                    {video["channelName"]}
-                                    </div>
-                                </Grid>
-                                <Grid item xs={2.5} style={{ textAlign: "center", padding: "0px 2px" }}>
-                                    <div style={{ textAlign: "left"}}>
-                                    {video["setName"]}
-                                    {/* <h5>{video["channelId"]}</h5> */}
-                                    {/* {video["channelName"]} */}
-                                    </div>
-                                </Grid>
-                                <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
-                                    <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Button variant="contained"
-                                        color="secondary"
-                                        style={{ margin: "0 auto", marginTop: 0 }}
-                                        disabled={currentVideo.id.videoId === video.id.videoId}
-                                        onClick={(e) => handlePlaySong(video)}
-                                        fullWidth
-                                    >
-                                        {currentVideo.id.videoId === video.id.videoId &&
-                                            <>Playing...</>
-                                        }
-                                        {!(currentVideo.id.videoId === video.id.videoId) &&
-                                            <>Play Song</>
-                                        }
-
-
-                                        {/* {video["id"]["videoId"]} */}
-                                        {/* {playedSongs.join(", ")} */}
-
-                                    </Button>
-                                    </div>
-                                </Grid>
-                                <Grid item xs={1} style={{ textAlign: "center", padding: "0px 2px" }}>
-                                    <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Button variant="contained"
-                                        color="secondary"
-                                        style={{ margin: "0 auto", marginTop: 0 }}
-                                        // disabled={currentVideo.id.videoId === video.id.videoId}
-                                        // onClick={(e) => handlePlaySong(video)}
-                                        fullWidth
-                                    >
-                                        Like
-                                    </Button>
-                                    </div>
-                                </Grid>
-                                <Grid item xs={1} style={{ textAlign: "center", padding: "0px 2px" }}>
-                                    <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Button variant="contained"
-                                        color="secondary"
-                                        style={{ margin: "0 auto", marginTop: 0 }}
-                                        // disabled={currentVideo.id.videoId === video.id.videoId}
-                                        onClick={(e) => handleRemoveSong(video)}
-                                          
-                                        fullWidth
-                                    >
-                                        Remove
-                                    </Button>
-                                    </div>
-                                </Grid>
-                                
-                                
+                                    </>
+                                }
 
                             </Grid>
 
 
 
-                            
-                            </>
-                        ))}
+                        </Grid>
+                    }
+                    {radioValue === 'SONG QUEUE' &&
+                        <Grid className="card-holder-inner sets songs" item xs={12} style={{ margin: "0 auto" }}>
 
-                    </Grid>
-                }
+                            {songVideos.map((video, index) => (
+
+                                <>
+                                    <Grid className={"song-card-outer" + (playedSongs.includes(video["id"]["videoId"]) ? " already-played" : "") + (currentVideo.id.videoId === video.id.videoId ? " playing" : "")} container key={index} xs={12}>
+                                        <Grid item xs={1.5}  >
+                                            {/* image thumbnail for each of the videos */}
+                                            <img width={"100%"} height={"100%"} src={video.snippet.thumbnails.default.url}></img>
+
+                                        </Grid>
+                                        <Grid item xs={4} style={{ textAlign: "left", padding: "0px 5px" }}>
+                                            <h3 style={{ margin: "5px 0px" }}>{video.snippet.title}</h3>
+
+                                            {/* {playedSongs.includes(video["id"]["videoId"]) &&
+                    <div style={{margin: "5px 0px"}}>
+                        Already Played
+                    </div>
+                    } */}
+
+                                            {/* <h5>{video["setId"]}</h5> */}
+
+                                        </Grid>
+                                      
+                                        <Grid item xs={3} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                            <div style={{ textAlign: "left" }}>
+                                                {/* {video["setName"]} */}
+                                                {/* <h5>{video["channelId"]}</h5> */}
+                                                <b>{video["channelName"]}: </b>
+                                                {video["setName"]}
+                                            </div>
+                                        </Grid>
+                                      
+                                        <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                            <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Button 
+                                                    className="card-button"
+                                                    // style={{ margin: "0 auto", marginTop: 0 }}
+                                                    disabled={currentVideo.id.videoId === video.id.videoId}
+                                                    onClick={(e) => handlePlaySong(video)}
+                                                    fullWidth
+                                                >
+                                                    {currentVideo.id.videoId === video.id.videoId &&
+                                                        <>Playing...</>
+                                                    }
+                                                    {!(currentVideo.id.videoId === video.id.videoId) &&
+                                                        <>{playedSongs.includes(video["id"]["videoId"]) ? "Play Again": "Play Song"}</>
+                                                    }
+
+
+                                                    {/* {video["id"]["videoId"]} */}
+                                                    {/* {playedSongs.join(", ")} */}
+
+                                                </Button>
+                                            </div>
+                                        </Grid>
+                                        <Grid item xs={1} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                            <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Button 
+                                                    // variant="contained"
+                                                    // color="secondary"
+                                                    className="card-button"
+                                                    // disabled={currentVideo.id.videoId === video.id.videoId}
+                                                    // onClick={(e) => handlePlaySong(video)}
+                                                    fullWidth
+                                                >
+                                                    Like
+                                                </Button>
+                                            </div>
+                                        </Grid>
+                                        <Grid item xs={1} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                            <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                                                <Button 
+                                                    // variant="contained"
+                                                    // color="secondary"
+                                                    className="card-button"
+                                                    style={{ margin: "0 auto", marginTop: 0 }}
+                                                    // disabled={currentVideo.id.videoId === video.id.videoId}
+                                                    onClick={(e) => handleRemoveSong(video)}
+
+                                                    fullWidth
+                                                >
+                                                    Remove
+                                                </Button>
+                                            </div>
+                                        </Grid>
+
+
+
+                                    </Grid>
+
+
+
+
+                                </>
+                            ))}
+
+                        </Grid>
+                    }
+                </Grid>
+
             </Grid>
+            </Grid>
+
         </div>
     );
 }

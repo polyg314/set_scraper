@@ -5,11 +5,11 @@ $song-theme-dark: darkmagenta;
 $set-theme: rgb(17, 255, 0);
 $set-theme-light: #e2ffe2; 
 $theme-color-3: #eaff00;
+$theme-color-3-trans: #eaff0099;
 $theme-color-4: rgb(49, 0, 70);
 $theme-color-4-dark: rgb(26, 3, 36);
 $theme-color-4-light: rgb(253 249 255);
 $theme-color-5: cyan;
-
 
 $theme-black: rgb(10, 10, 10);
 // body{
@@ -17,42 +17,68 @@ $theme-black: rgb(10, 10, 10);
 //     background-color: yellow;
 // }
 
-body{
-    background-color: $theme-color-4;
-    background-image: repeating-linear-gradient(
-        45deg,
-        $song-theme, // Color of the sawtooth
-        $theme-color-4-dark 1px, // Start color block, adjust for tooth width
-        $theme-color-4 3px, // Background color, matches end of color block
-        $theme-color-4 10px // End color block, adjust for tooth width
-      );
-      background-size: 26px 12px;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-    // background-image: radial-gradient($theme-color-3 5px, transparent 5px);
-    // background-size: 10px 10px;
+body {
+    position: relative;
+    background-image: url('../images/cardboard-texture.png');
+    background-size: 20px 20px;
+    background-repeat: repeat;
+    background-position: center center;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1;;
+    margin: 0; /* Ensure the body fills the entire viewport */
+  }
+  
+//   body::after {
+//     content: '';
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     right: 0;
+//     bottom: 0;
+//     background: rgba(1, 34, 77, 0.448); /* Black overlay with 50% opacity */
+//     // z-index: 0;
+//   }
+
+#header-title{
+    text-shadow: 2px 2px 4px black;
+    font-size: 70px;
+    font-weight: bolder;
+    margin-top: 78px;
+    // margin-left: 20px
+    // background-color: blue;
 }
+
 
 #app-toolbar{
     // background-color: $theme-color-4;
     // background-color: transparent !important;
     // box-shadow: 0px 0px 0px 0px black;
     // border: none !important;
-    
+    z-index: -1000000 !important;
     color: $theme-color-3;
 }
 
 
 
 .main-video-outer-wrapper{
-    top: 144px;
+    top: 190px;
 }
 
 .main-video-outer{
-    background-color: $theme-color-3;
+    border: 7px solid $theme-color-3;
+    padding: 0px !important;
+    background-color: black;
+    // background-color: $theme-color-3;
+    border-style: inset; 
 }
 
+.main-video-outer iframe{
+    // box-shadow: 0px 3px 0px 0px black;
+    // border: 5px solid $theme-color-3;
+    // border-style: inset; 
+}   
 .video-buttons-container{
     margin-top: 20px !important;
     // background-color: blue;
@@ -60,6 +86,7 @@ body{
 
 .video-button{
     border: 1px solid $theme-color-5 !important;
+    
     color: $theme-color-3 !important;
     font-weight: bold;
     font-size: 16px !important;
@@ -74,11 +101,18 @@ body{
 
 
 .sets-songs-button{
+    font-size: 20px !important;
+    padding: 3px !important;
+    margin-bottom: 10px !important;
     // background-color: blue;
 }
 
+.sets-songs-button{
+    background-color: $theme-color-3-trans !important;
+
+}
 .sets-songs-button:hover{
-    background-color: rgb(0, 174, 0) !important;
+    background-color: $theme-color-3 !important;
 }
 
 .sets-songs-button{
@@ -86,89 +120,39 @@ body{
 }
 
 .sets-songs-button.active{
-    background-color: $set-theme;
+
+    background-color: $theme-color-3 !important;
     color: $theme-black !important;
 }
 
-.current-channel-button.sets:hover{
-    background-color: rgb(0, 174, 0) !important;
-}
-.current-channel-button.active{
-    background-color: $set-theme;
-    color: $theme-black;
-}
-
-.sets-songs-button.songs:hover{
-    background-color: $song-theme !important;
-}
-
-.sets-songs-buttons-container.sets{
-      /* Create a linear gradient from $set-theme green to white */
-    background: linear-gradient(to right, $set-theme 49%, white 51%) !important;
-
-    /* Ensure the gradient covers the entire container */
-    background-size: cover;
-    // background-color: $set-theme !important;
-}
-
-.sets-songs-buttons-container.songs{
-    background: linear-gradient(to left, $song-theme 49%, white 51%) !important;
-
-    /* Ensure the gradient covers the entire container */
-    background-size: cover;
-    // background-color: $set-theme !important;
-}
-
-// /* Keyframes for the wave effect */
-// @keyframes waveEffect {
-//     0%, 100% {
-//         background-color: transparent;
-//     }
-//     50% {
-//         background-color: $set-theme;
-//     }
-// }
-
-// /* Applying the animation to the .sets class */
-// .sets-songs-buttons-container.sets {
-//     animation: waveEffect 3s ease-in-out infinite;
-// }
-
-// /* Applying the animation to the .songs class with a slight delay */
-// .sets-songs-buttons-container.songs {
-//     animation: waveEffect 3s ease-in-out infinite;
-//     animation-delay: 1.5s; /* Adjust this delay to control the wave effect timing between the two divs */
-// }
-
-
-
 
 .set-card-outer, .song-card-outer{
-    border: 2px solid white;
+    // border: 2px solid white;
     margin-bottom: 2px;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.75);
 }
 
 .set-card-outer.playing, .song-card-outer.playing{
-    background: $theme-color-3 !important;
-    box-shadow: -10px 0px 0px 0px $theme-color-3;
+    background: #eaff00c5 !important;
+    border-color: $theme-color-3 !important;
+    // box-shadow: -10px 0px 0px 0px $theme-color-3;
 }
 
 
 
 
 .set-card-outer.already-played, .song-card-outer.already-played{
-    background: rgb(220, 220, 220);
-    border: 2px solid grey;
+    background: rgba(220, 220, 220, 0);
+    border: 1px solid rgba(255, 255, 255);
 }
 
 
 .set-card-outer{
-    border: 2px solid $set-theme;
+    border: 1px solid $theme-color-5;
 }
 
 .song-card-outer{
-    border: 2px solid $song-theme;
+    border:  1px solid $theme-color-5;
 }
 // .song-card-outer{
 //     background-color: $song-theme-light;
@@ -177,3 +161,87 @@ body{
 .card-holder-inner{
     background-color: $theme-black;
 }
+
+
+#main-content-outer{
+    // background-color: rgba(255, 255, 255, 0.45);
+    height: 100vh;
+
+    // z-index: -10;
+    overflow: scroll;
+}
+
+#main-content-control-panel-inner{
+    // background-color: rgb(25, 236, 236);
+    padding: 0px;
+    // border: 2px solid white;
+    // padding: 10px;
+    // position: fixed;
+    // top: 80px;
+    // width: calc(6.5/12 * 100%);
+    // z-index: 11111;
+}
+
+#main-content-control-panel-outer{
+    // background-color: rgba(0, 255, 255, 0.422);
+    // border: 2px solid white;
+    padding: 10px;
+    position: fixed;
+    top: 100px;
+    width: calc(6.5/12 * 100%);
+    z-index: 11111;
+
+}
+
+.card-holder-outer{
+    // background-color: white;
+    padding: 10px;
+    position: fixed;
+    top: 280px;
+    right: 0px;
+    overflow: hidden; /* Prevents overflow */
+    height: calc(100vh - 320px);
+    width: calc(6.5/12 * 100%) !important;
+
+    // margin-top: 0px !important;
+}
+
+.card-holder-inner{
+    height: 100%; /* Take full height of its parent */
+    border-top: 10px solid rgb(34, 30, 34);
+    // border-style: inset;
+    overflow: scroll;
+    padding: 5px;
+    // padding-top: 5px;
+    background-color: rgba(255, 255, 255, 0.725) !important;
+    // margin-top: 180px !important;
+}
+
+.card-button{
+    height: 100%;
+    box-shadow: none !important;
+}
+
+#search-filter-bar-outer{
+   
+}
+
+.search-filter-bar{
+    background-color: rgba(255, 255, 255, 0.931);
+}
+
+#channel-switcher-outer-wrapper{
+    padding: 0px 5px 0px 0px;
+}
+
+#channel-switcher-outer{
+    background-color: rgba(255, 255, 255, 0.931);
+}
+
+// .card-holder-inner.sets{
+//     border-left: 5px solid $theme-color-3;
+// }
+
+// .card-holder-inner.songs{
+//     border-right: 5px solid $theme-color-3;
+// }

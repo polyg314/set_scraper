@@ -1,14 +1,14 @@
 import { AppBar, Box, IconButton, Toolbar, Typography } from "@material-ui/core";
-import Login from "./components/Login";
+import Login from "./Login";
 
 
 export const Header = () => {
   return (
     <div>
-      <AppBar component="nav" style={{boxShadow: "none", background: "transparent"}}>
+      {/* <AppBar component="nav" style={{boxShadow: "none", background: "transparent"}}> */}
         <Toolbar
         id={"app-toolbar"}
-        style={{textAlign: "left"}}>
+        style={{textAlign: "left", position: "fixed"}}>
           {/* <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -19,13 +19,14 @@ export const Header = () => {
             <MenuIcon />
           </IconButton> */}
           <Typography
-            style={{ fontWeight: "bold", paddingTop: 54}}
-            variant="h2"
+            // style={{ fontWeight: "bold", paddingTop: 54}}
+            // variant="h1"
+            id="header-title"
             
             // component="div"
             // sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            THE DOWNLOAD
+            THE DOWNLOAD.
           </Typography>
           {/* <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
             {navItems.map((item) => (
@@ -34,12 +35,11 @@ export const Header = () => {
               </Button>
             ))}
           </Box> */}
-          <div style={{position: "fixed", right: "20px", top: 20}}>
-          <Login />
-            </div>
+          {/* <div style={{position: "fixed", right: "20px", top: 20, zIndex: "1000000000 !important" }}>
+            </div> */}
           
         </Toolbar>
-      </AppBar>
+      {/* </AppBar> */}
     </div>
   );
 }

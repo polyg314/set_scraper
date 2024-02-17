@@ -18,7 +18,7 @@ export const ChannelsSelectWithArrows = ({ Channels, currentChannelId, handleSet
   };
 
   return (
-    <Grid item container xs={12} style={{background: "white"}}>
+    <Grid item container xs={12} id="channel-switcher-outer" style={{}}>
       <IconButton onClick={() => handleArrowClick('left')}>
         <ArrowBackIosNewIcon />
       </IconButton>
@@ -30,7 +30,7 @@ export const ChannelsSelectWithArrows = ({ Channels, currentChannelId, handleSet
           color="primary"
           value={currentChannelId}
           onChange={(e) => handleSetChannelId(e.target.value)}
-          style={{ backgroundColor: "white" }}
+          style={{  }}
           className="current-channel-select"
         >
           {Channels.map((channel) => (

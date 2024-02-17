@@ -14,35 +14,58 @@ const YouTubePlayer = (props:any) => {
 
   useEffect(() => {
     const onYouTubeIframeAPIReady = () => {
-      // Define the player
       playerInstanceRef.current = new window.YT.Player(playerRef.current, {
         videoId: props.videoId,
         width: '100%',
-        // height: '250px', // Example height, consider dynamically calculating this based on the aspect ratio
         events: {
           onReady: (event) => {
             console.log('YouTube Player is ready');
           },
           onStateChange: (event) => {
-            console.log(event)
-            if(event.data === 1){
-                // console.log(props.currentlyPlayingType)
-                props.addId()
-                // if(props.currentlyPlayingType === "SETS"){
-                //     console.log('adding set id')
-                //     props.addSetId(props.videoId)
-                // }else if(props.currentlyPlayingType === "SONGS"){
-                //     console.log('adding song id')
-                //     props.addSongId(props.videoId)
-                // }
-            //   console.log('video playing')
-            //   props.addVideoId(props.videoId)
+            if (event.data === 1) {
+              props.addId();
+            } else if (event.data === 0) {
+              props.handlePlayNext();
             }
-            else if (event.data == 0) {
-                props.handlePlayNext()
-                // color = "#FFFF00"; // ended = yellow
+          },
+        },
+      });
+    };
+  
+    if (!window.YT) {
+      const tag = document.createElement('script');
+      tag.src = 'https://www.youtube.com/iframe_api';
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  
+      window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
+    } else if (!playerInstanceRef.current) {
+      onYouTubeIframeAPIReady();
+    } else {
+      playerInstanceRef.current.loadVideoById(props.videoId);
+    }
+  }, [props.videoId]);
 
-            } 
+  // Separate useEffect for handling side effects related to props.songVideos changes
+useEffect(() => {
+  // Here you can handle what should happen when props.songVideos changes,
+  // without directly affecting the YouTube player instance.
+  // This is a good place to implement logic that prepares for the next video or
+  // updates related UI elements based on the new list of videos.
+  // Note: There's no need to interact with the YouTube player instance here.
+
+  // Example:
+  // console.log("Updated songVideos list:", props.songVideos);
+
+}, [props.songVideos, props.channelVideos]); 
+
+  return <div ref={playerRef} style={{ width: '100%' }} />;
+};
+
+export default YouTubePlayer;
+
+
+
             // if (playerStatus == -1) {
             //     color = "#37474F"; // unstarted = gray
             //   } else if (playerStatus == 0) {
@@ -56,39 +79,3 @@ const YouTubePlayer = (props:any) => {
             //   } else if (playerStatus == 5) {
             //     color = "#FF6DOO"; // video cued = orange
             //   }
-            // props.addVideoId(videoId)
-          }
-          // You can handle other events here
-        },
-      });
-    };
-
-    if (!window.YT) { // If the YouTube IFrame API is not loaded yet
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-      window.onYouTubeIframeAPIReady = onYouTubeIframeAPIReady;
-    } else if (!playerInstanceRef.current) {
-      // If the API is loaded but the player instance is not created
-      onYouTubeIframeAPIReady();
-    } else {
-      // If the player instance exists and the videoId changes
-      playerInstanceRef.current.loadVideoById(props.videoId);
-    }
-  }, [props.videoId, props.songVideos, props.channelVideos]);
-
-  // Cleanup on component unmount
-  useEffect(() => {
-    return () => {
-      if (playerInstanceRef.current) {
-        playerInstanceRef.current.destroy();
-      }
-    };
-  }, []);
-
-  return <div ref={playerRef} style={{ width: '100%' }} />;
-};
-
-export default YouTubePlayer;
