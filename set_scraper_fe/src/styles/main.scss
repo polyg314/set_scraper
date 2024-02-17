@@ -6,7 +6,9 @@ $set-theme: rgb(17, 255, 0);
 $set-theme-light: #e2ffe2; 
 $theme-color-3: #eaff00;
 $theme-color-4: rgb(49, 0, 70);
+$theme-color-4-dark: rgb(26, 3, 36);
 $theme-color-4-light: rgb(253 249 255);
+$theme-color-5: cyan;
 
 
 $theme-black: rgb(10, 10, 10);
@@ -17,6 +19,19 @@ $theme-black: rgb(10, 10, 10);
 
 body{
     background-color: $theme-color-4;
+    background-image: repeating-linear-gradient(
+        45deg,
+        $theme-color-3, // Color of the sawtooth
+        $theme-color-4-dark 1px, // Start color block, adjust for tooth width
+        $theme-color-4 3px, // Background color, matches end of color block
+        $theme-color-4 10px // End color block, adjust for tooth width
+      );
+      background-size: 26px 12px;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+    // background-image: radial-gradient($theme-color-3 5px, transparent 5px);
+    // background-size: 10px 10px;
 }
 
 #app-toolbar{
@@ -24,11 +39,42 @@ body{
     // background-color: transparent !important;
     // box-shadow: 0px 0px 0px 0px black;
     // border: none !important;
+    
     color: $theme-color-3;
 }
 
+
+
+.main-video-outer-wrapper{
+    top: 144px;
+}
+
+.main-video-outer{
+    background-color: $theme-color-3;
+}
+
+.video-buttons-container{
+    margin-top: 20px !important;
+    // background-color: blue;
+}
+
+.video-button{
+    border: 1px solid $theme-color-5 !important;
+    color: $theme-color-3 !important;
+    font-weight: bold;
+    font-size: 16px !important;
+    text-shadow: 1px 1px 2px black;
+    background-color: rgba(255, 255, 255, 0.53) !important;
+    // transparancy: 0.5;
+}
+
+.video-button-container-inner{
+    padding: 10px;
+}
+
+
 .sets-songs-button{
-    background-color: blue;
+    // background-color: blue;
 }
 
 .sets-songs-button:hover{

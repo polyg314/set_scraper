@@ -18,7 +18,7 @@ const YouTubePlayer = (props:any) => {
       playerInstanceRef.current = new window.YT.Player(playerRef.current, {
         videoId: props.videoId,
         width: '100%',
-        height: '250px', // Example height, consider dynamically calculating this based on the aspect ratio
+        // height: '250px', // Example height, consider dynamically calculating this based on the aspect ratio
         events: {
           onReady: (event) => {
             console.log('YouTube Player is ready');

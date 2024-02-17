@@ -19,7 +19,7 @@ export const Header = () => {
             <MenuIcon />
           </IconButton> */}
           <Typography
-            style={{ fontWeight: "bold"}}
+            style={{ fontWeight: "bold", paddingTop: 54}}
             variant="h2"
             
             // component="div"
@@ -34,7 +34,7 @@ export const Header = () => {
               </Button>
             ))}
           </Box> */}
-          <div style={{position: "fixed", right: "20px"}}>
+          <div style={{position: "fixed", right: "20px", top: 20}}>
           <Login />
             </div>
           
