@@ -21,7 +21,7 @@ body{
     background-color: $theme-color-4;
     background-image: repeating-linear-gradient(
         45deg,
-        $theme-color-3, // Color of the sawtooth
+        $song-theme, // Color of the sawtooth
         $theme-color-4-dark 1px, // Start color block, adjust for tooth width
         $theme-color-4 3px, // Background color, matches end of color block
         $theme-color-4 10px // End color block, adjust for tooth width
@@ -151,6 +151,7 @@ body{
 
 .set-card-outer.playing, .song-card-outer.playing{
     background: $theme-color-3 !important;
+    box-shadow: -10px 0px 0px 0px $theme-color-3;
 }
 
 
