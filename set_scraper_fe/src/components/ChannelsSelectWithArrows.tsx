@@ -27,14 +27,14 @@ export const ChannelsSelectWithArrows = ({ Channels, currentChannelId, handleSet
           fullWidth
           size="small"
           variant="outlined"
+          style={{fontSize:'26px'}}
           color="primary"
           value={currentChannelId}
           onChange={(e) => handleSetChannelId(e.target.value)}
-          style={{  }}
           className="current-channel-select"
         >
           {Channels.map((channel) => (
-            <MenuItem key={channel.channelId} value={channel.channelId}>
+            <MenuItem key={channel.channelId} style={{fontSize:'26px'}} value={channel.channelId}>
               {channel.channelName}
             </MenuItem>
           ))}

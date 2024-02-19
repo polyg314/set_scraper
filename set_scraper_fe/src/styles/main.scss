@@ -12,6 +12,13 @@ $theme-color-4-light: rgb(253 249 255);
 $theme-color-5: cyan;
 
 $theme-black: rgb(10, 10, 10);
+
+$color-not-active: rgba(70, 3, 70, 0.597);
+$color-hover: rgba(96, 4, 96, 0.597);
+$color-active: rgba(70, 3, 70, 0.597);
+
+
+// : url('../images/yellow-rubber.png') 2px 2px repeat;
 // body{
 
 //     background-color: yellow;
@@ -43,7 +50,7 @@ body {
 
 #header-title{
     text-shadow: 2px 2px 4px black;
-    font-size: 70px;
+    font-size: 72px;
     font-weight: bolder;
     margin-top: 78px;
     // margin-left: 20px
@@ -101,72 +108,117 @@ body {
 
 
 .sets-songs-button{
-    font-size: 20px !important;
+    font-size: 36px !important;
     padding: 3px !important;
     margin-bottom: 10px !important;
+    border-radius: 10px !important;
+    color: $color-not-active !important;
+    background-image: url('../images/grey-rubber.png');
+    background-size: 120px 120px;
+    background-repeat: repeat;
+    // color: blue !important;
+    // height: 50px !important;
     // background-color: blue;
 }
 
 .sets-songs-button{
-    background-color: $theme-color-3-trans !important;
+    // background: ;
 
 }
 .sets-songs-button:hover{
-    background-color: $theme-color-3 !important;
-}
-
-.sets-songs-button{
-    color: $theme-black !important;
+    background-image: url('../images/blue-rubber.png');
+    background-size: 120px 120px;
+    background-repeat: repeat;
+    // background-color: $theme-color-3 !important;
+    color: $color-hover !important;
 }
 
 .sets-songs-button.active{
+    box-shadow: 0px 0px 0px 0px $theme-color-3 !important;  
+    color: $color-active !important;
+    background-image: url('../images/yellow-rubber.png');
+    background-size: 120px 120px;
+    background-repeat: repeat;
 
-    background-color: $theme-color-3 !important;
-    color: $theme-black !important;
+
+
+    // background: url('../images/paper-background-yellow.png') 100px 100px repeat;
+    // color: $theme-black !important;
 }
 
 
 .set-card-outer, .song-card-outer{
     // border: 2px solid white;
-    margin-bottom: 2px;
-    background-color: rgba(255, 255, 255, 0.75);
+    // margin-bottom: 2px;
+    // background-color: rgba(255, 255, 255, 0.75);
+    background-image: url('../images/paper-background-blue-light.png');
+    background-size: 100px 100px;
+    background-repeat: repeat;
+    background-position: center center;
+    padding: 5px;
+
+.set-card-inner{
+    padding: 5px;
+    border: 1px solid rgba(0, 123, 123, 0.681);
+}
+}
+
+
+
+.set-card-outer.already-played, .song-card-outer.already-played{
+    background-image: url('../images/paper-background-white.png');
+    background-size: 100px 100px;
+    background-repeat: repeat;
+
+    background-position: center center;
+
+.set-card-inner{
+    padding: 5px;
+    border: 1px solid rgba(128, 128, 128, 0.502);
+}
+    // background: rgba(220, 220, 220, 0);
+    // border: 1px solid rgba(255, 255, 255);
 }
 
 .set-card-outer.playing, .song-card-outer.playing{
-    background: #eaff00c5 !important;
-    border-color: $theme-color-3 !important;
+    background-image: url('../images/paper-background-yellow.png') ;
+    background-size: 100px 100px;
+    background-repeat: repeat;
+    background-position: center center;
+
+    .set-card-inner{
+        padding: 5px;
+        border: 1px solid rgba(91, 91, 0, 0.574);
+    }
+    // background: #eaff00c5 !important;
+    // border-color: $theme-color-3 !important;
     // box-shadow: -10px 0px 0px 0px $theme-color-3;
 }
 
 
 
 
-.set-card-outer.already-played, .song-card-outer.already-played{
-    background: rgba(220, 220, 220, 0);
-    border: 1px solid rgba(255, 255, 255);
-}
-
-
 .set-card-outer{
-    border: 1px solid $theme-color-5;
+    // border: 1px solid $theme-color-5;
 }
 
 .song-card-outer{
-    border:  1px solid $theme-color-5;
+    // border:  1px solid $theme-color-5;
 }
 // .song-card-outer{
 //     background-color: $song-theme-light;
 // }
 
 .card-holder-inner{
-    background-color: $theme-black;
+
+    // background-color: $theme-black;
 }
 
 
 #main-content-outer{
     // background-color: rgba(255, 255, 255, 0.45);
     height: 100vh;
-
+  
     // z-index: -10;
     overflow: scroll;
 }
@@ -195,25 +247,26 @@ body {
 
 .card-holder-outer{
     // background-color: white;
-    padding: 10px;
+    padding: 0px 20px;
     position: fixed;
     top: 280px;
     right: 0px;
     overflow: hidden; /* Prevents overflow */
     height: calc(100vh - 320px);
     width: calc(6.5/12 * 100%) !important;
-
+    // border-top: 10px solid rgb(34, 30, 34);
+    // border-bottom: 10px solid rgb(34, 30, 34);
     // margin-top: 0px !important;
 }
 
 .card-holder-inner{
     height: 100%; /* Take full height of its parent */
-    border-top: 10px solid rgb(34, 30, 34);
+   
     // border-style: inset;
     overflow: scroll;
-    padding: 5px;
+    // padding: 5px;
     // padding-top: 5px;
-    background-color: rgba(255, 255, 255, 0.725) !important;
+    // background-color: rgba(255, 255, 255, 0.725) !important;
     // margin-top: 180px !important;
 }
 
@@ -223,7 +276,7 @@ body {
 }
 
 #search-filter-bar-outer{
-   
+   padding: 0px 10px;
 }
 
 .search-filter-bar{
@@ -231,7 +284,8 @@ body {
 }
 
 #channel-switcher-outer-wrapper{
-    padding: 0px 5px 0px 0px;
+    // padding: 0px 5px 0px 0px;
+    padding: 0px 10px;
 }
 
 #channel-switcher-outer{
@@ -245,3 +299,8 @@ body {
 // .card-holder-inner.songs{
 //     border-right: 5px solid $theme-color-3;
 // }
+
+
+.sets-songs-button-holder{
+    padding: 10px;
+}
