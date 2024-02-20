@@ -830,7 +830,7 @@ export const Main = () => {
                                                                     <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
                                                                         <Button variant="contained"
                                                                             fullWidth
-                                                                            className="card-button"
+                                                                            className="card-button "
                                                                             // color="secondary"
                                                                             disabled={currentVideo.id.videoId === video.id.videoId}
                                                                             style={{ margin: "0 auto", marginTop: 0, fontSize: 12 }} // Adjusted marginTop
@@ -852,7 +852,7 @@ export const Main = () => {
                                                                     <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
                                                                         <Button variant="contained"
                                                                             // color="secondary"
-                                                                            className="card-button"
+                                                                            className="card-button add-songs"
                                                                             fullWidth
                                                                             style={{ margin: "0 auto", marginTop: 0, fontSize: 12 }} // Adjusted marginTop
                                                                             disabled={addedSets.includes(video["id"]["videoId"])}
@@ -887,20 +887,27 @@ export const Main = () => {
                             </Grid>
                         }
                         {radioValue === 'SONG QUEUE' &&
-                            <Grid className="card-holder-inner sets songs" item xs={12} style={{ margin: "0 auto" }}>
+                            <Grid className="card-holder-inner songs" item xs={12} style={{ margin: "0 auto" }}>
 
                                 {songVideos.map((video, index) => (
 
                                     <>
                                         <Grid className={"song-card-outer" + (playedSongs.includes(video["id"]["videoId"]) ? " already-played" : "") + (currentVideo.id.videoId === video.id.videoId ? " playing" : "")} container key={index} xs={12}>
+                                        <Grid className="set-card-inner" item container xs={12} style={{ }}>
+
                                             <Grid item xs={1.5}  >
                                                 {/* image thumbnail for each of the videos */}
                                                 <img width={"100%"} height={"100%"} src={video.snippet.thumbnails.default.url}></img>
 
                                             </Grid>
-                                            <Grid item xs={4} style={{ textAlign: "left", padding: "0px 5px" }}>
+                                            <Grid item xs={6} style={{ textAlign: "left", padding: "0px 5px" }}>
                                                 <h3 style={{ margin: "5px 0px" }}>{video.snippet.title}</h3>
 
+                                                {/* <div style={{ textAlign: "left" }}> */}
+                                                    {/* {video["setName"]} */}
+                                                    {/* <h5>{video["channelId"]}</h5> */}
+                                                    <b>{video["channelName"]}: </b>
+                                                    {video["setName"]}
                                                 {/* {playedSongs.includes(video["id"]["videoId"]) &&
                     <div style={{margin: "5px 0px"}}>
                         Already Played
@@ -911,14 +918,6 @@ export const Main = () => {
 
                                             </Grid>
 
-                                            <Grid item xs={3} style={{ textAlign: "center", padding: "0px 2px" }}>
-                                                <div style={{ textAlign: "left" }}>
-                                                    {/* {video["setName"]} */}
-                                                    {/* <h5>{video["channelId"]}</h5> */}
-                                                    <b>{video["channelName"]}: </b>
-                                                    {video["setName"]}
-                                                </div>
-                                            </Grid>
 
                                             <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
                                                 <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
@@ -943,12 +942,12 @@ export const Main = () => {
                                                     </Button>
                                                 </div>
                                             </Grid>
-                                            <Grid item xs={1} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                            <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
                                                 <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
                                                     <Button
                                                         // variant="contained"
                                                         // color="secondary"
-                                                        className="card-button"
+                                                        className="card-button like"
                                                         // disabled={currentVideo.id.videoId === video.id.videoId}
                                                         // onClick={(e) => handlePlaySong(video)}
                                                         fullWidth
@@ -957,12 +956,12 @@ export const Main = () => {
                                                     </Button>
                                                 </div>
                                             </Grid>
-                                            <Grid item xs={1} style={{ textAlign: "center", padding: "0px 2px" }}>
+                                            <Grid item xs={1.5} style={{ textAlign: "center", padding: "0px 2px" }}>
                                                 <div style={{ display: 'flex', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
                                                     <Button
                                                         // variant="contained"
                                                         // color="secondary"
-                                                        className="card-button"
+                                                        className="card-button  remove"
                                                         style={{ margin: "0 auto", marginTop: 0 }}
                                                         // disabled={currentVideo.id.videoId === video.id.videoId}
                                                         onClick={(e) => handleRemoveSong(video)}
@@ -975,7 +974,7 @@ export const Main = () => {
                                             </Grid>
 
 
-
+                                                        </Grid>
                                         </Grid>
 
 
