@@ -4,7 +4,7 @@ $song-theme-light: #fbedf4;
 $song-theme-dark: darkmagenta;
 $set-theme: rgb(17, 255, 0);
 $set-theme-light: #e2ffe2; 
-$theme-color-3: #eaff00;
+$theme-color-3: #feff43;
 $theme-color-3-trans: #eaff0099;
 $theme-color-4: rgb(49, 0, 70);
 $theme-color-4-dark: rgb(26, 3, 36);
@@ -17,6 +17,13 @@ $color-not-active: rgba(70, 3, 70, 0.597);
 $color-hover: rgba(96, 4, 96, 0.597);
 $color-active: rgba(70, 3, 70, 0.597);
 
+
+
+
+
+$text-color-played: rgba(2, 2, 79, 0.645) ;
+$text-color-playing: rgba(1, 1, 75, 0.727) ;
+$text-color-not-played: rgba(2, 2, 79, 0.645) ;
 
 // : url('../images/yellow-rubber.png') 2px 2px repeat;
 // body{
@@ -50,8 +57,8 @@ body {
 
 #header-title{
     text-shadow: 2px 2px 4px black;
-    font-size: 72px;
-    font-weight: bolder;
+    font-size: 74px;
+    font-weight: 900;
     margin-top: 78px;
     // margin-left: 20px
     // background-color: blue;
@@ -108,6 +115,8 @@ body {
 
 
 .sets-songs-button{
+    box-shadow: 0px 0px 0px 0px $theme-color-3 !important;  
+
     font-size: 36px !important;
     padding: 3px !important;
     margin-bottom: 10px !important;
@@ -129,6 +138,8 @@ body {
     background-image: url('../images/blue-rubber.png');
     background-size: 120px 120px;
     background-repeat: repeat;
+    box-shadow: 0px 0px 0px 0px $theme-color-3 !important;  
+
     // background-color: $theme-color-3 !important;
     color: $color-hover !important;
 }
@@ -147,7 +158,20 @@ body {
 }
 
 
+
+
+.set-title-text{
+    margin: 2px 5px;
+    font-size: 22px;
+    // font-weight: bold;
+}
+
+.set-card-inner{
+    border: 1px solid rgba(32, 6, 58, 0.235);
+}
+
 .set-card-outer, .song-card-outer{
+
     // border: 2px solid white;
     // margin-bottom: 2px;
     // background-color: rgba(255, 255, 255, 0.75);
@@ -156,12 +180,16 @@ body {
     background-repeat: repeat;
     background-position: center center;
     padding: 5px;
-
+    .set-title-text{
+        color: $text-color-not-played
+    }
 .set-card-inner{
     padding: 5px;
-    border: 1px solid rgba(0, 123, 123, 0.681);
+
 }
 }
+
+
 
 
 
@@ -171,10 +199,14 @@ body {
     background-repeat: repeat;
 
     background-position: center center;
+    .set-title-text{
+        color: $text-color-played;
+    }
 
 .set-card-inner{
+    border-radius: 3px;
     padding: 5px;
-    border: 1px solid rgba(128, 128, 128, 0.502);
+    // border: 1px solid rgba(128, 128, 128, 0.502);
 }
     // background: rgba(220, 220, 220, 0);
     // border: 1px solid rgba(255, 255, 255);
@@ -185,10 +217,13 @@ body {
     background-size: 100px 100px;
     background-repeat: repeat;
     background-position: center center;
-
+    .set-title-text{
+        color: $text-color-playing;
+        // text-shadow: 0px 0px 2px black
+    }
     .set-card-inner{
         padding: 5px;
-        border: 1px solid rgba(91, 91, 0, 0.574);
+        // border: 1px solid rgba(91, 91, 0, 0.574);
     }
     // background: #eaff00c5 !important;
     // border-color: $theme-color-3 !important;
@@ -260,6 +295,11 @@ body {
 }
 
 .card-holder-inner{
+    border: 7px solid $theme-color-3;
+    padding: 0px !important;
+    background-color: black;
+    // background-color: $theme-color-3;
+    border-style: inset; 
     height: 100%; /* Take full height of its parent */
    
     // border-style: inset;
@@ -270,9 +310,39 @@ body {
     // margin-top: 180px !important;
 }
 
+
+
+
 .card-button{
     height: 100%;
     box-shadow: none !important;
+    background-image: url('../images/paper-background-blue.png') ;
+    background-size: 100px 100px;
+    background-repeat: repeat;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: rgba(2, 2, 79, 0.744) !important
+}
+
+.already-played:not(.playing){
+    .card-button{
+        background-image: url('../images/paper-background-blue-grey.png');
+        background-size: 100px 100px;
+        background-repeat: repeat;
+        color: rgba(2, 2, 79, 0.645) !important
+    }
+
+}
+
+
+.already-played.playing{
+    .card-button.Mui-disabled{
+        background-image: url('../images/paper-background-yellow.png');
+        background-size: 100px 100px;
+        background-repeat: repeat;
+        color: rgba(2, 2, 79, 0.645) !important
+    }
+
 }
 
 #search-filter-bar-outer{
@@ -304,3 +374,7 @@ body {
 .sets-songs-button-holder{
     padding: 10px;
 }
+
+
+
+

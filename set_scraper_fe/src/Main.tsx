@@ -817,13 +817,11 @@ export const Main = () => {
 
                                                             <Grid className={"set-card-outer" + (playedSets.includes(video["id"]["videoId"]) ? " already-played" : "") + (currentVideo.id.videoId === video.id.videoId ? " playing" : "")} container key={index} xs={12}>
                                                                 <Grid className="set-card-inner" item container xs={12} style={{ }}>
-                                                                <Grid item xs={1.5}  >
-                                                                    {/* image thumbnail for each of the videos */}
-                                                                    <img width={"100%"} height={"100%"} src={video.snippet.thumbnails.default.url}></img>
-
+                                                                <Grid item xs={1.5} component="div" style={{backgroundColor: "black"}}  container alignItems="center">
+                                                                    <img width={"100%"} src={video.snippet.thumbnails.default.url}></img>
                                                                 </Grid>
                                                                 <Grid item xs={7.5} style={{ textAlign: "left", padding: "0px 5px" }}>
-                                                                    <h3>{video.snippet.title}</h3>
+                                                                    <h3 className="set-title-text">{video.snippet.title}</h3>
                                                                     {/* {playedSets.includes(video["id"]["videoId"]) &&
                                                                     <>ALREADY PLAYED</>
                                                                 } */}
@@ -834,10 +832,19 @@ export const Main = () => {
                                                                             fullWidth
                                                                             className="card-button"
                                                                             // color="secondary"
+                                                                            disabled={currentVideo.id.videoId === video.id.videoId}
                                                                             style={{ margin: "0 auto", marginTop: 0, fontSize: 12 }} // Adjusted marginTop
                                                                             onClick={(e) => handlePlaySet(video)}
-                                                                        >
-                                                                            Play Set
+                                                                        >   
+                                                                        {currentVideo.id.videoId === video.id.videoId &&
+                                                                            <>Playing...</>
+                                                                        }
+                                                                        {!(currentVideo.id.videoId === video.id.videoId) &&
+                                                                            <>
+                                                                                Play {playedSets.includes(video["id"]["videoId"]) ? "Again" : "Set"}
+
+                                                                            </>
+                                                                        }
                                                                         </Button>
                                                                     </div>
                                                                 </Grid>
