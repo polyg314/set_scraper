@@ -70,6 +70,8 @@ export const Main = () => {
     const [songVideos, setSongVideos] = useState(() => {
         // Attempt to load saved songs from local storage
         const savedSongs = localStorage.getItem('songVideos');
+        console.log("SAVED SONGS")
+        console.log(JSON.parse(savedSongs))
         return savedSongs ? JSON.parse(savedSongs) : [];
     });
 
@@ -104,8 +106,7 @@ export const Main = () => {
 
     // Update local storage whenever playedSets changes
     useEffect(() => {
-        // console.log("added sets")
-        // console.log(JSON.stringify(addedSets))
+
         localStorage.setItem('addedSets', JSON.stringify(addedSets));
     }, [addedSets]);
 
@@ -137,7 +138,6 @@ export const Main = () => {
     const addSetId = () => {
 
         setPlayedSets((prevPlayedSets) => {
-            console.log(currentVideoRef.current.id.videoId)
             // Create a new array to avoid mutating the state directly
             let updatedSets = [...prevPlayedSets, currentVideoRef.current.id.videoId];
             updatedSets = Array.from(new Set(updatedSets)); // Fix: Replace 'set' with 'Set'
@@ -152,8 +152,7 @@ export const Main = () => {
 
     const [playedSongs, setPlayedSongs] = useState(() => {
         const storedSongs = localStorage.getItem('playedSongs');
-        console.log("played songs")
-        console.log(storedSongs)
+
         return storedSongs ? JSON.parse(storedSongs) : [];
     });
 
@@ -164,9 +163,7 @@ export const Main = () => {
 
     // Function to add a new set ID, ensuring the max length is not exceeded
     const addSongId = () => {
-        console.log("ADD SONG ID")
         setPlayedSongs((prevPlayedSongs) => {
-            console.log(currentVideoRef.current.id.videoId)
             // Create a new array to avoid mutating the state directly
             let updatedSongs = [...prevPlayedSongs, currentVideoRef.current.id.videoId];
             updatedSongs = Array.from(new Set(updatedSongs)); // Fix: Replace 'Song' with 'Song'
@@ -179,9 +176,7 @@ export const Main = () => {
     };
 
     const addId = (newId) => {
-        console.log("add id")
-        console.log(currentlyPlayingTypeRef)
-        console.log(newId)
+
         if (currentlyPlayingTypeRef.current === "SETS") {
             addSetId()
         } else if (currentlyPlayingTypeRef.current === "SONGS") {
@@ -216,8 +211,7 @@ export const Main = () => {
                 headers: axiosConfig
             });
             if (res.status === 200 && res.data.video_details) {
-                console.log("HIHIHI");
-                console.log(res.data.video_details);
+
                 let videosToAdd = res.data.video_details.map(videoDetail => {
                     let id = videoDetail.id;
                     return {
@@ -254,9 +248,7 @@ export const Main = () => {
 
 
     const handleScrapeSet = (video) => {
-        console.log(video)
         let videoId = video["id"]["videoId"];
-        console.log('videoId:', videoId);
         let setInfo = {}
         setInfo["channelId"] = video["snippet"]["channelId"];
         setInfo["channelName"] = video["snippet"]["channelTitle"];
@@ -264,7 +256,6 @@ export const Main = () => {
         setInfo["setId"] = videoId;
 
         setAddedSets((prevAddedSets) => {
-            console.log(videoId)
             // Create a new array to avoid mutating the state directly
             let updatedSets = [...prevAddedSets, videoId];
             updatedSets = Array.from(new Set(updatedSets)); // Fix: Replace 'set' with 'Set'
@@ -272,15 +263,14 @@ export const Main = () => {
             if (updatedSets.length > MAX_SETS) {
                 updatedSets.shift(); // Removes the first item
             }
-            console.log("NEW ADDED")
-            console.log(updatedSets)
+
             return updatedSets;
         });
         // setaddedSets([...addedSets, videoId]);
 
         //api call to backend to scrape set music
         scrapeSetMusic(videoId, setInfo).then((response) => {
-            console.log('response:', response);
+
         })
 
     }
@@ -297,7 +287,6 @@ export const Main = () => {
                 headers: axiosConfig
             })
             if (res.status === 200) {
-                // console.log(res)
 
                 return res.data
             }
@@ -332,7 +321,8 @@ export const Main = () => {
                 });
                 setChannelVideos(channelVideosCopy);
                 setCurrentVideo(channelVideosCopy[Channels[0]["channelId"]][0])
-
+                console.log("CHANNEL VIDS")
+                console.log(channelVideosCopy)
                 // Optionally set the current video here, if needed
             })
             .catch(error => console.error("Error fetching videos:", error));
@@ -342,50 +332,39 @@ export const Main = () => {
 
 
 
-
-
+    function formatDateEST(isoDateString: string): string {
+        const options: Intl.DateTimeFormatOptions = {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          timeZone: 'America/New_York'
+        };
+      
+        const formatter = new Intl.DateTimeFormat('en-US', options);
+        return formatter.format(new Date(isoDateString));
+      }
+      
 
     const handlePlaySet = (video) => {
-        console.log("PLAY SET")
-        console.log(video)
+
         setCurrentVideo(video)
         setCurrentlyPlayingType('SETS')
     }
 
     const handlePlaySong = (video) => {
-        console.log("PLAY SONG")
-        console.log(currentlyPlayingType)
         setCurrentlyPlayingType('SONGS')
-        // if(currentlyPlayingType !== 'SONGS'){
-        //     console.log('setting currently playing type')
-
-        // }
-        // var id = video["id"]
-        // video["id"] = {}
-        // video["id"]["videoId"] = id
-        // console.log(video)
-        // console.log(currentVideo.id.videoId)
-        // video["id"]["video_id"] = video["id"]
         setCurrentVideo(video)
     }
 
     const handleRemoveSong = (video) => {
         let allVideosCopy = objectCopy(songVideos)
         let allIds = allVideosCopy.map((video) => video.id.videoId)
-        console.log(allVideosCopy)
-
         let index = allIds.indexOf(video.id.videoId)
-        console.log(index)
         allVideosCopy.splice(index, 1)
-        //  = [...newVideos, ...songVideos].slice(0, 200);
         setSongVideos(allVideosCopy);
         // Update local storage
         localStorage.setItem('songVideos', JSON.stringify(allVideosCopy));
-        // if(index !== 0){
-        //     handlePlayNext(allVideosCopy[index - 1].id.videoId)
-        // }
         enqueueSnackbar('Song removed from queue', { variant: 'success' });
-        // let songsCoppy 
     }
 
 
@@ -402,8 +381,6 @@ export const Main = () => {
                     Accept: 'application/json',
                 },
             }).then((response) => {
-                console.log('response:', response);
-                console.log('Video liked successfully');
                 enqueueSnackbar('Video liked successfully', { variant: 'success' });
             });
 
@@ -419,7 +396,6 @@ export const Main = () => {
 
     const handleLike = (videoId) => {
         if (!userInfo.accessToken) {
-            console.log('User is not authenticated.');
             return;
         }
 
@@ -449,11 +425,8 @@ export const Main = () => {
     }
 
     const handlePlayPrevious = () => {
-        console.log("PLAYaaaaa")
         if (!getPreviousDisabled()) {
-            console.log("DIS")
             if (currentlyPlayingTypeRef.current === 'SETS') {
-                console.log("setssss")
                 for (let i = 1; i < channelVideosRef.current[currentVideoRef.current.snippet.channelId].length; i++) {
                     if (channelVideosRef.current[currentVideoRef.current.snippet.channelId][i].id.videoId === currentVideoRef.current.id.videoId) {
                         setCurrentVideo(channelVideosRef.current[currentVideoRef.current.snippet.channelId][i - 1])
@@ -463,10 +436,7 @@ export const Main = () => {
                 // setCurrentVideo(channelVideos[currentChannelId][0])
             }
             else {
-                console.log("ummm")
                 for (let i = 1; i < songVideosRef.current.length; i++) {
-                    console.log(songVideosRef.current[i].id.videoId)
-                    console.log(currentVideoRef.current.id.videoId)
                     if (songVideosRef.current[i].id.videoId === currentVideoRef.current.id.videoId) {
                         setCurrentVideo(songVideosRef.current[i - 1])
                         return
@@ -476,7 +446,6 @@ export const Main = () => {
             }
         }
         else {
-            console.log("NEXT IS DIS")
             return
         }
 
@@ -493,18 +462,14 @@ export const Main = () => {
 
             disabled = songVideos.map((video) => video.id.videoId).indexOf(currentVideo.id.videoId) === (songVideos.length - 1) || songVideos.length === 0
         }
-        console.log("DIISSS")
-        console.log(disabled)
+
         return disabled
     }
 
 
     const handlePlayNext = () => {
-        console.log("PLAYaaaaa")
         if (!getNextDisabled()) {
-            console.log("DIS")
             if (currentlyPlayingTypeRef.current === 'SETS') {
-                console.log("setssss")
                 for (let i = 0; i < channelVideosRef.current[currentVideoRef.current.snippet.channelId].length; i++) {
                     if (channelVideosRef.current[currentVideoRef.current.snippet.channelId][i].id.videoId === currentVideoRef.current.id.videoId) {
                         setCurrentVideo(channelVideosRef.current[currentVideoRef.current.snippet.channelId][i + 1])
@@ -514,10 +479,8 @@ export const Main = () => {
                 // setCurrentVideo(channelVideos[currentChannelId][0])
             }
             else {
-                console.log("ummm")
                 for (let i = 0; i < songVideosRef.current.length; i++) {
-                    console.log(songVideosRef.current[i].id.videoId)
-                    console.log(currentVideoRef.current.id.videoId)
+
                     if (songVideosRef.current[i].id.videoId === currentVideoRef.current.id.videoId) {
                         setCurrentVideo(songVideosRef.current[i + 1])
                         return
@@ -527,7 +490,6 @@ export const Main = () => {
             }
         }
         else {
-            console.log("NEXT IS DIS")
             return
         }
 
@@ -717,7 +679,7 @@ export const Main = () => {
             <Grid container justifyContent="flex-end" xs={12}>
 
                 <Grid item container sm={12} md={6.5} id="main-content-outer">
-                    <Grid item style={{ position: "fixed", left: 20, bottom: 26 }}>
+                    <Grid item style={{ position: "fixed", right: 20, top: 26 }}>
                         <Login />
                     </Grid>
                     <Grid item container xs={12} id="main-content-control-panel-outer">
@@ -822,6 +784,7 @@ export const Main = () => {
                                                                 </Grid>
                                                                 <Grid item xs={7.5} style={{ textAlign: "left", padding: "0px 5px" }}>
                                                                     <h3 className="set-title-text">{video.snippet.title}</h3>
+                                                                    <p className="published-text">Published: {formatDateEST(video.snippet.publishedAt)}</p>
                                                                     {/* {playedSets.includes(video["id"]["videoId"]) &&
                                                                     <>ALREADY PLAYED</>
                                                                 } */}
@@ -902,12 +865,11 @@ export const Main = () => {
                                             </Grid>
                                             <Grid item xs={6} style={{ textAlign: "left", padding: "0px 5px" }}>
                                                 <h3 style={{ margin: "5px 0px" }}>{video.snippet.title}</h3>
-
+                                                <p className="artist-text">{video.snippet.channelTitle.replace("- Topic", "")}</p>
                                                 {/* <div style={{ textAlign: "left" }}> */}
                                                     {/* {video["setName"]} */}
                                                     {/* <h5>{video["channelId"]}</h5> */}
-                                                    <b>{video["channelName"]}: </b>
-                                                    {video["setName"]}
+                                                <a className="song-set-link" href={"https://www.youtube.com/watch?v=" + video["setId"]} target="_blank"><b>{video["channelName"]}: </b>{video["setName"]}</a>
                                                 {/* {playedSongs.includes(video["id"]["videoId"]) &&
                     <div style={{margin: "5px 0px"}}>
                         Already Played

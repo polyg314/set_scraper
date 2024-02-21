@@ -56,12 +56,17 @@ body {
 //   }
 
 #header-title{
-    text-shadow: 2px 2px 4px black;
     font-size: 74px;
-    font-weight: 900;
+    // box-shadow: 0px 5px 13px black;
+    // padding: 0px 20px;
+    font-weight: bolder !important;
     margin-top: 78px;
-    // margin-left: 20px
-    // background-color: blue;
+    background-image: url('../images/yellow-rubber.png'); /* Adjust the path */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-size: 120px 120px;
 }
 
 
@@ -71,7 +76,8 @@ body {
     // box-shadow: 0px 0px 0px 0px black;
     // border: none !important;
     z-index: -1000000 !important;
-    color: $theme-color-3;
+
+    // color: $theme-color-3;
 }
 
 
@@ -81,11 +87,19 @@ body {
 }
 
 .main-video-outer{
-    border: 7px solid $theme-color-3;
-    padding: 0px !important;
+
+    border: 8px solid transparent; /* Define the border size */
+    border-image-source: url('../images/yellow-rubber.png'); /* Path to your image */
+    border-image-slice: 60; /* Adjusts the slicing of the image */
+    border-image-repeat: repeat;
+
+
     background-color: black;
+    // border: 7px solid $theme-color-3;
+    // padding: 0px !important;
+
     // background-color: $theme-color-3;
-    border-style: inset; 
+    // border-style: inset; 
 }
 
 .main-video-outer iframe{
@@ -99,14 +113,23 @@ body {
 }
 
 .video-button{
-    border: 1px solid $theme-color-5 !important;
-    
-    color: $theme-color-3 !important;
-    font-weight: bold;
-    font-size: 16px !important;
-    text-shadow: 1px 1px 2px black;
-    background-color: rgba(255, 255, 255, 0.53) !important;
-    // transparancy: 0.5;
+    box-shadow: 0px 0px 0px 0px $theme-color-3 !important;  
+    color: $color-active !important;
+    background-image: url('../images/yellow-rubber.png');
+    background-size: 120px 120px;
+    background-repeat: repeat;
+    font-weight: bolder !important;
+    font-size: 20px !important;
+}
+
+.video-button:hover{
+
+    background-image: url('../images/blue-rubber.png');
+}
+
+.video-button.Mui-disabled{
+
+    background-image: url('../images/grey-rubber.png');
 }
 
 .video-button-container-inner{
@@ -122,7 +145,7 @@ body {
     margin-bottom: 10px !important;
     border-radius: 10px !important;
     color: $color-not-active !important;
-    background-image: url('../images/grey-rubber.png');
+    background-image: url('../images/yellow-rubber-faded.png');
     background-size: 120px 120px;
     background-repeat: repeat;
     // color: blue !important;
@@ -295,11 +318,16 @@ body {
 }
 
 .card-holder-inner{
-    border: 7px solid $theme-color-3;
+    border: 8px solid transparent; /* Define the border size */
+    border-image-source: url('../images/yellow-rubber.png'); /* Path to your image */
+    border-image-slice: 60; /* Adjusts the slicing of the image */
+    border-image-repeat: repeat;
+
+    // border: 7px solid $theme-color-3;
     padding: 0px !important;
     background-color: black;
     // background-color: $theme-color-3;
-    border-style: inset; 
+    // border-style: inset; 
     height: 100%; /* Take full height of its parent */
    
     // border-style: inset;
@@ -408,3 +436,36 @@ body {
 
 
 
+#login-button, #logout-button{
+    border:none !important;
+    box-shadow: none !important;
+    font-weight: bold !important;
+    color: $text-color-not-played !important;
+}
+
+#login-button{
+    background-image: url('../images/blue-rubber.png') !important ;
+    background-size: 100px 100px;
+    background-repeat: repeat;
+}
+
+#logout-button{
+    background-image: url('../images/red-rubber.png') !important ;
+    background-size: 100px 100px;
+    background-repeat: repeat;
+}
+
+
+
+.published-text{
+    margin-left: 5px;
+}
+
+.song-set-link {
+    text-decoration: none;
+    color: $text-color-played;
+  }
+  
+.artist-text{
+    margin: 5px 0px !important;
+}

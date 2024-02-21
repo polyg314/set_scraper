@@ -80,36 +80,38 @@ const Login = () => {
 {!userInfo.accessToken ? (
     <button 
         onClick={() => login()} 
+        id="login-button"
         style={{
             // backgroundColor: '#4285F4', 
-            background: "transparent",
-            color: 'white', 
-            border: "1px solid cyan", 
+            // background: "transparent",
+            // color: 'white', 
+            // border: "1px solid cyan", 
             borderRadius: '4px', 
             padding: '10px 24px', 
             cursor: 'pointer', 
-            fontFamily: 'Roboto, sans-serif', 
+            // fontFamily: 'Roboto, sans-serif', 
             fontWeight: '500',
             fontSize: '16px',
-            boxShadow: '0 2px 4px 0 rgba(0,0,0,0.25)'
+            // boxShadow: '0 2px 4px 0 rgba(0,0,0,0.25)'
         }}>
         LOGIN
     </button>
 ) : (
     <button 
         onClick={signOut} 
+        id="logout-button"
         style={{
             // backgroundColor: '#DB4437', 
-            background: "transparent",
-            color: 'white', 
-            border: "1px solid pink", 
+            // background: "transparent",
+            // color: 'white', 
+            // border: "1px solid pink", 
             borderRadius: '4px', 
             padding: '10px 24px', 
             cursor: 'pointer', 
-            fontFamily: 'Roboto, sans-serif', 
+            // fontFamily: 'Roboto, sans-serif', 
             fontWeight: '500',
             fontSize: '16px',
-            boxShadow: '0 2px 4px 0 rgba(0,0,0,0.25)'
+            // boxShadow: '0 2px 4px 0 rgba(0,0,0,0.25)'
         }}>
         LOGOUT
     </button>
