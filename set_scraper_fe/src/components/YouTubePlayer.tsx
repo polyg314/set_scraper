@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
 // Load the YouTube IFrame API script
 declare global {
@@ -8,9 +8,60 @@ declare global {
     }
   }
 
-const YouTubePlayer = (props:any) => {
+
+  
+
+const YouTubePlayer = forwardRef((props:any, ref) => {
+  // const playerInstanceRef = useRef();/
+
+  // Use `useImperativeHandle` to expose any function to the parent component
+  useImperativeHandle(ref, () => ({
+    seekSeconds(timeChange) {
+      if (playerInstanceRef.current) {
+        // Assuming you have a way to access the current time of the player
+        const currentTime = playerInstanceRef.current.getCurrentTime();
+        const newTime = currentTime +timeChange;
+        playerInstanceRef.current.seekTo(newTime);
+      }
+    },
+    
+  }));
+
+
+
+
   const playerRef = useRef(null); // DOM element ref
   const playerInstanceRef = useRef(null); // YouTube player instance ref
+
+
+const updateCurrentTime = () => {
+  const player = playerInstanceRef.current;
+  if (player && player.getPlayerState() === window.YT.PlayerState.PLAYING) {
+    const time = player.getCurrentTime();
+    // setCurrentTime(time); // Update your currentTime state/prop
+    // console.log(time)
+
+    props.updateCurrentTime(time); // Assuming you have a prop function to update the time
+  }
+};
+
+// // Function to seek the YouTube player's current time forward by 500 seconds
+// const seekForwardThreeHundredSeconds = () => {
+//   if (playerInstanceRef.current) {
+//     const currentTime = playerInstanceRef.current.getCurrentTime();
+//     const newTime = currentTime + 300; // Calculate new time by adding 500 seconds
+//     playerInstanceRef.current.seekTo(newTime); // Use the YouTube API to seek to the new time
+//   }
+// };
+
+// const seekBackwardThreeHundredSeconds = () => {
+//   if (playerInstanceRef.current) {
+//     const currentTime = playerInstanceRef.current.getCurrentTime();
+//     const newTime = currentTime - 300; // Calculate new time by adding 500 seconds
+//     playerInstanceRef.current.seekTo(newTime); // Use the YouTube API to seek to the new time
+//   }
+// }
+
 
   useEffect(() => {
     const onYouTubeIframeAPIReady = () => {
@@ -20,11 +71,17 @@ const YouTubePlayer = (props:any) => {
         events: {
           onReady: (event) => {
             console.log('YouTube Player is ready');
+            setInterval(updateCurrentTime, 5000); // Poll every second while playing
           },
           onStateChange: (event) => {
-            if (event.data === 1) {
+            if (event.data === window.YT.PlayerState.PLAYING) {
+              updateCurrentTime(); // Update currentTime on play
+            } else if (event.data === window.YT.PlayerState.PAUSED || event.data === window.YT.PlayerState.ENDED) {
+              updateCurrentTime(); // Update currentTime on pause/end
+            }
+            if (event.data === window.YT.PlayerState.PLAYING) {
               props.addId();
-            } else if (event.data === 0) {
+            } else if (event.data === window.YT.PlayerState.ENDED) {
               props.handlePlayNext();
             }
           },
@@ -60,7 +117,7 @@ useEffect(() => {
 }, [props.songVideos, props.channelVideos]); 
 
   return <div ref={playerRef} style={{ width: '100%' }} />;
-};
+});
 
 export default YouTubePlayer;
 
