@@ -256,22 +256,6 @@ body {
 
 
 
-.set-card-outer{
-    // border: 1px solid $theme-color-5;
-}
-
-.song-card-outer{
-    // border:  1px solid $theme-color-5;
-}
-// .song-card-outer{
-//     background-color: $song-theme-light;
-// }
-
-.card-holder-inner{
-
-    // background-color: $theme-black;
-}
-
 
 #main-content-outer{
     // background-color: rgba(255, 255, 255, 0.45);
@@ -304,27 +288,31 @@ body {
 }
 
 .card-holder-outer{
-    // background-color: white;
-    padding: 0px 20px;
+    margin: 0px 20px !important;
+    background-image: url('../images/yellow-rubber.png');
+    background-size: 120px 120px;
+    background-repeat: repeat;
+    padding: 10px;
     position: fixed;
     top: 280px;
     right: 0px;
     overflow: hidden; /* Prevents overflow */
     height: calc(100vh - 320px);
-    width: calc(6.5/12 * 100%) !important;
+    width: calc((6.5/12 * 100%) - 40px) !important;
     // border-top: 10px solid rgb(34, 30, 34);
     // border-bottom: 10px solid rgb(34, 30, 34);
     // margin-top: 0px !important;
 }
 
 .card-holder-inner{
-    border: 8px solid transparent; /* Define the border size */
-    border-image-source: url('../images/yellow-rubber.png'); /* Path to your image */
-    border-image-slice: 60; /* Adjusts the slicing of the image */
-    border-image-repeat: repeat;
+    // border: 8px solid transparent; /* Define the border size */
+    // border-image-source: url('../images/yellow-rubber.png'); /* Path to your image */
+    // border-image-slice: 60; /* Adjusts the slicing of the image */
+    // border-image-repeat: repeat;
 
     // border: 7px solid $theme-color-3;
     padding: 0px !important;
+    padding-bottom: 40px !important;
     background-color: black;
     // background-color: $theme-color-3;
     // border-style: inset; 
@@ -468,4 +456,10 @@ body {
   
 .artist-text{
     margin: 5px 0px !important;
+}
+
+
+.unplayed-text{
+    margin-top: 0px !important;
+    font-weight: bold;
 }

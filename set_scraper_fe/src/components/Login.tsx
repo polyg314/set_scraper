@@ -3,6 +3,7 @@ import { useGoogleLogin } from '@react-oauth/google';
 import Cookies from 'js-cookie';
 import { UserContext } from '../hooks/userContext';
 import axios from 'axios';
+import { API_URL } from '../utils/constants';
 
 const Login = () => {
     const { userInfo, setUserInfo } = useContext(UserContext);
@@ -35,7 +36,7 @@ const Login = () => {
 
             // Send the Google ID to your backend to associate the refresh token
             // and any other necessary data with the user
-            await axios.post('/api/store-token', { googleId, accessToken });
+            await axios.post(API_URL + '/api/store-token', { googleId, accessToken });
 
         } catch (error) {
             console.error('Error fetching Google user info:', error);

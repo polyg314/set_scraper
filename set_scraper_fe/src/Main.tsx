@@ -158,11 +158,11 @@ export const Main = () => {
     }, [currentlyPlayingType]);
 
 
-    const addSetId = () => {
+    const addSetId = (videoId) => {
 
         setPlayedSets((prevPlayedSets) => {
             // Create a new array to avoid mutating the state directly
-            let updatedSets = [...prevPlayedSets, currentVideoRef.current.id.videoId];
+            let updatedSets = [...prevPlayedSets, videoId];
             updatedSets = Array.from(new Set(updatedSets)); // Fix: Replace 'set' with 'Set'
 
             if (updatedSets.length > MAX_SETS) {
@@ -171,6 +171,36 @@ export const Main = () => {
             return updatedSets;
         });
     };
+
+
+
+    const [likedVideos, setLikedVideos] = useState(() => {
+        const storedLikes = localStorage.getItem('likedVideos');
+        console.log("LIKED VIDS")
+        console.log(storedLikes)
+        return storedLikes ? JSON.parse(storedLikes) : [];
+    });
+
+    // Update local storage whenever likedVideos changes
+    useEffect(() => {
+        localStorage.setItem('likedVideos', JSON.stringify(likedVideos));
+
+    }, [likedVideos]);
+
+    // Function to add a new set ID, ensuring the max length is not exceeded
+    const addVideoToLikes = videoId => {
+        setLikedVideos((prevLikes) => {
+            // Create a new array to avoid mutating the state directly
+            let updatedLikes = [...prevLikes, videoId];
+            updatedLikes = Array.from(new Set(updatedLikes)); // Fix: Replace 'Song' with 'Song'
+
+            if (updatedLikes.length > MAX_SONGS) {
+                updatedLikes.shift(); // Removes the first item
+            }
+            return updatedLikes;
+        });
+    };
+
 
 
     const [playedSongs, setPlayedSongs] = useState(() => {
@@ -185,10 +215,10 @@ export const Main = () => {
     }, [playedSongs]);
 
     // Function to add a new set ID, ensuring the max length is not exceeded
-    const addSongId = () => {
+    const addSongId = (videoId) => {
         setPlayedSongs((prevPlayedSongs) => {
             // Create a new array to avoid mutating the state directly
-            let updatedSongs = [...prevPlayedSongs, currentVideoRef.current.id.videoId];
+            let updatedSongs = [...prevPlayedSongs, videoId];
             updatedSongs = Array.from(new Set(updatedSongs)); // Fix: Replace 'Song' with 'Song'
 
             if (updatedSongs.length > MAX_SONGS) {
@@ -201,9 +231,9 @@ export const Main = () => {
     const addId = (newId) => {
 
         if (currentlyPlayingTypeRef.current === "SETS") {
-            addSetId()
+            addSetId(currentVideoRef.current.id.videoId)
         } else if (currentlyPlayingTypeRef.current === "SONGS") {
-            addSongId()
+            addSongId(currentVideoRef.current.id.videoId)
         }
     }
 
@@ -354,6 +384,32 @@ export const Main = () => {
     }, []);
 
 
+    
+    // const [userLikedVideoIds, setUserLikedVideoIds] = useState([])
+
+    // const fetchLikedVideos = async (accessToken) => {
+    //     fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&myRating=like&access_token=${accessToken}`)
+    //       .then(response => response.json())
+    //       .then(data => {
+    //         console.log("LIKED VIDEOS")
+    //         console.log(data.items); // This will log the liked videos
+    //         return data.items;
+    //         // Process the data here
+    //       })
+    //       .catch(error => console.log(error));
+    //   };
+
+
+    // useEffect(() => {
+    //     if(userInfo.accessToken){
+    //         fetchLikedVideos(userInfo.accessToken).then(res => {
+    //             console.log("SUER liked videos")
+    //             console.log(res)
+    //         })
+    //     }
+
+    // }, [userInfo.accessToken])
+
 
     function formatDateEST(isoDateString: string): string {
         const options: Intl.DateTimeFormatOptions = {
@@ -405,6 +461,7 @@ export const Main = () => {
                 },
             }).then((response) => {
                 enqueueSnackbar('Video liked successfully', { variant: 'success' });
+                addVideoToLikes(videoId);
             });
 
 
@@ -557,8 +614,6 @@ export const Main = () => {
     }
 
     const getFFDisabled = () => {
-        console.log("currentVideo")
-        console.log(currentVideo)
         return false
     }
 
@@ -572,6 +627,23 @@ export const Main = () => {
         }
     }
 
+    const getUnplayedSongs = () => {
+        let allSongIds = songVideos.map((video) => video.id.videoId)
+        let unplayed = allSongIds.filter((songId) => !playedSongs.includes(songId))
+        return unplayed.length
+    }
+
+    const getUnplayedSets = () => {
+
+        var unplayed = []
+        if(channelVideos[currentChannelId]){
+            let allSetIds = channelVideos[currentChannelId].map((video) => video.id.videoId)
+            unplayed = allSetIds.filter((setId) => !playedSets.includes(setId))
+        }
+
+        return unplayed.length
+
+    }
 
     return (
         <div>
@@ -609,11 +681,11 @@ export const Main = () => {
 
                         <Grid xs={12} item container className="video-buttons-container">
                             <Grid container item xs={12} id="video-buttons-upper" style={{ padding: 5 }}>
-                                <Grid item container xs={6}>
-                                    <Grid item xs={6} style={{ paddingRight: 10 }}>
+                            <Grid container item xs={6} justifyContent="flex-start" alignItems="center">
+                                    <Grid item xs={6} style={{ display: 'flex', justifyContent: 'flex-start', paddingLeft: 0 }}>
                                         <Button
                                             className={"video-button"}
-                                            fullWidth
+                                            // fullWidth
                                             // variant="contained"
                                             // color="primary"
                                             onClick={(e) => handleRW()}
@@ -625,7 +697,7 @@ export const Main = () => {
                                 <Grid container item xs={6} justifyContent="flex-end" alignItems="center">
                                     <Grid item xs={6} style={{ display: 'flex', justifyContent: 'flex-end', paddingLeft: 10 }}>
                                         <Button
-                                            fullWidth
+                                            // fullWidth
                                             className={"video-button"}
                                             onClick={(e) => handleFF()}
                                             disabled={getFFDisabled()}>
@@ -653,15 +725,25 @@ export const Main = () => {
                                     <Tooltip
                                         placement="left"
                                         title={!userInfo.accessToken ? "Please Login to Google Account to Like Videos" : "Like on YouTube"}>
-
+                                        
                                         <Button
                                             className={"video-button"}
                                             fullWidth
                                             // variant="contained"
                                             // color="primary"
-                                            disabled={!userInfo.accessToken}
+                                            disabled={!userInfo.accessToken || likedVideos.includes(currentVideo.id.videoId)}
                                             onClick={(e) => handleLike(currentVideo.id.videoId)}>
-                                            <ThumbUpOffAltIcon style={{ marginRight: 5 }} />  {currentlyPlayingType === 'SETS' ? "Set" : "Song"}
+                                               {likedVideos.includes(currentVideo.id.videoId) && 
+                                                <>
+                                                Liked
+                                                </>
+                                               } 
+                                                {!likedVideos.includes(currentVideo.id.videoId) && 
+                                                <>
+                                                <ThumbUpOffAltIcon style={{ marginRight: 5 }} />  {currentlyPlayingType === 'SETS' ? "Set" : "Song"}
+
+                                                </>
+                                               } 
                                         </Button>
                                     </Tooltip>
                                 </Grid>
@@ -850,8 +932,17 @@ export const Main = () => {
                         </Grid>
                     </Grid>
                     <Grid container className="card-holder-outer" justifyContent="flex-end" item style={{}}>
-
-
+                            
+                        {radioValue === 'SETS' &&
+                            <>
+                                <p className="unplayed-text">Unplayed Sets: {getUnplayedSets()}</p>
+                            </>
+                        }
+                        {radioValue === 'SONG QUEUE' &&
+                            <>
+                                <p className="unplayed-text">Unplayed Songs: {getUnplayedSongs()}</p>
+                            </>
+                        }
                         {radioValue === 'SETS' &&
                             <Grid className="card-holder-inner sets" item xs={12}
                                 style={{
@@ -877,7 +968,8 @@ export const Main = () => {
                                                                         <img width={"100%"} src={video.snippet.thumbnails.default.url}></img>
                                                                     </Grid>
                                                                     <Grid item xs={7.5} style={{ textAlign: "left", padding: "0px 5px" }}>
-                                                                        <h3 className="set-title-text">{video.snippet.title}</h3>
+                                                                        <h3 className="set-title-text" dangerouslySetInnerHTML={{ __html: video.snippet.title}}>
+                                                                            </h3>
                                                                         <p className="published-text">Published: {formatDateEST(video.snippet.publishedAt)}</p>
                                                                         {/* {playedSets.includes(video["id"]["videoId"]) &&
                                                                     <>ALREADY PLAYED</>
@@ -969,20 +1061,9 @@ export const Main = () => {
 
                                                 </Grid>
                                                 <Grid item xs={6} style={{ textAlign: "left", padding: "0px 5px" }}>
-                                                    <h3 style={{ margin: "5px 0px" }}>{video.snippet.title}</h3>
-                                                    <p className="artist-text">{video.snippet.channelTitle.replace("- Topic", "")}</p>
-                                                    {/* <div style={{ textAlign: "left" }}> */}
-                                                    {/* {video["setName"]} */}
-                                                    {/* <h5>{video["channelId"]}</h5> */}
-                                                    <a className="song-set-link" href={"https://www.youtube.com/watch?v=" + video["setId"]} target="_blank"><b>{video["channelName"]}: </b>{video["setName"]}</a>
-                                                    {/* {playedSongs.includes(video["id"]["videoId"]) &&
-                    <div style={{margin: "5px 0px"}}>
-                        Already Played
-                    </div>
-                    } */}
-
-                                                    {/* <h5>{video["setId"]}</h5> */}
-
+                                                    <h3 style={{ margin: "5px 0px" }}  dangerouslySetInnerHTML={{ __html: video.snippet.title}}></h3>
+                                                    <p className="artist-text" dangerouslySetInnerHTML={{ __html: video.snippet.channelTitle.replace("- Topic", "")}}></p>
+                                                    <a className="song-set-link" href={"https://www.youtube.com/watch?v=" + video["setId"]} target="_blank" dangerouslySetInnerHTML={{ __html: video["channelName"] + ": " + video["setName"] }}></a>
                                                 </Grid>
 
 
@@ -1021,11 +1102,17 @@ export const Main = () => {
                                                                 // variant="contained"
                                                                 // color="secondary"
                                                                 className="card-button like"
-                                                                disabled={!userInfo.accessToken}
+                                                                disabled={!userInfo.accessToken || likedVideos.includes(currentVideo.id.videoId)}
                                                                 onClick={(e) => handleLike(video.id.videoId)}
                                                                 fullWidth
                                                             >
-                                                                <ThumbUpOffAltIcon />
+                                                                {likedVideos.includes(video.id.videoId) && 
+                                                                    <>Liked</>
+                                                                }
+                                                                {!likedVideos.includes(video.id.videoId) && 
+                                                                    <ThumbUpOffAltIcon />
+
+                                                                }
                                                             </Button>
                                                         </div>
                                                     </Grid>
