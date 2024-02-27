@@ -1,26 +1,16 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { AppBar, Autocomplete, Grid, Tab, Tabs, Typography } from "@mui/material";
-import Radio from '@mui/material/Radio';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import RadioGroup from '@mui/material/RadioGroup';
-import { Header } from "./components/Header";
+import {  Grid, Typography } from "@mui/material";
 import axios from 'axios';
-import { Button, Select, TextField, Toolbar, Tooltip } from "@material-ui/core";
+import { Button, TextField, Tooltip } from "@material-ui/core";
 import { API_URL, Channels } from "./utils/constants";
-
 import { axiosConfig } from "./utils/constants";
 import { objectCopy } from "./utils/miscFunctions";
 import YouTubePlayer from "./components/YouTubePlayer";
 import { UserContext } from "./hooks/userContext";
 import { useSnackbar } from 'notistack';
-import "./styles/main.scss"
-import { MenuItem, IconButton } from '@mui/material';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+
 import { ChannelsSelectWithArrows } from "./components/ChannelsSelectWithArrows";
 import Login from "./components/Login";
-
 import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import FastForwardIcon from '@mui/icons-material/FastForward';
@@ -33,9 +23,12 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 
 
-// import Forward5Icon from '@mui/icons-material/Forward5';
-// import Forward30Icon from '@mui/icons-material/Forward5';
-
+// style imports
+import "./styles/main.scss"
+import "./styles/header.scss"
+import "./styles/login.scss"
+import "./styles/main-video.scss"
+import "./styles/main-content.scss"
 
 
 
@@ -647,11 +640,16 @@ export const Main = () => {
 
     return (
         <div>
-            <Header />
+           <Typography
+            // style={{ }}
+            id="header-title"
+          >
+            THE DOWNLOAD.
+          </Typography>
 
             {currentVideo &&
                 <>
-                    <Grid container item xs={12} lg={5.5} className="main-video-outer-wrapper" style={{ position: "fixed", zIndex: 100, padding: 20 }}>
+                    <Grid container item xs={12} lg={5.5} className="main-video-outer-wrapper">
 
                         <Grid item xs={12}
                             className="main-video-outer" style={{ margin: "0 auto", padding: 5 }}>
@@ -796,66 +794,16 @@ export const Main = () => {
 
                         </Grid>
 
-                        {/* </Grid> */}
 
-
-                        {/* 
-                {radioValue === 'SETS' &&
-                    <Grid item container xs={12} lg={8} style={{ margin: "0 auto", background: "#ffe500", paddingBottom: 0 }}>
-                        {Channels.map((channel, index) => (
-
-                            <Grid item xs={12 / Channels.length}>
-                                <Button
-                                    fullWidth
-                                    variant="contained"
-                                    color="primary"
-                                    value={channel["channelId"]}
-                                    onClick={(e) => handleSetChannelId(channel["channelId"])}
-                                    style={{}}
-                                    className={"current-channel-button " + (currentChannelId === channel["channelId"] ? "active" : "")}
-                                >
-                                    <b>{channel["channelName"]}</b>
-                                </Button>
-                            </Grid>
-
-                        ))
-                        }
-
-
-
-                    </Grid>
-                }
- */}
 
                     </Grid>
                 </>
             }
-            {/* <Grid item container xs={12} lg={6.5}
-                style={{
-                    margin: "0 auto",
-                    // background: "#ffe500",
-                    paddingBottom: 0,
-                    position: "fixed",
-                    top: 76,
-                    right: 0,
-                    padding: 20
-                }}> */}
-            {/* <Grid
-                    item
-                    xs={4}
-                    container
-                    className={"sets-songs-buttons-container" + (radioValue === 'SETS' ? " sets" : " songs")}
-                > */}
 
-            {/* </Grid> */}
-
-
-
-            {/* </Grid> */}
             <Grid container justifyContent="flex-end" xs={12}>
 
                 <Grid item container sm={12} md={6.5} id="main-content-outer">
-                    <Grid item style={{ position: "fixed", right: 20, top: 26 }}>
+                    <Grid item id="login-container">
                         <Login />
                     </Grid>
                     <Grid item container xs={12} id="main-content-control-panel-outer">
@@ -1061,7 +1009,7 @@ export const Main = () => {
 
                                                 </Grid>
                                                 <Grid item xs={6} style={{ textAlign: "left", padding: "0px 5px" }}>
-                                                    <h3 style={{ margin: "5px 0px" }}  dangerouslySetInnerHTML={{ __html: video.snippet.title}}></h3>
+                                                    <h3 style={{ margin: "5px 0px" }}  className="song-title-text" dangerouslySetInnerHTML={{ __html: video.snippet.title}}></h3>
                                                     <p className="artist-text" dangerouslySetInnerHTML={{ __html: video.snippet.channelTitle.replace("- Topic", "")}}></p>
                                                     <a className="song-set-link" href={"https://www.youtube.com/watch?v=" + video["setId"]} target="_blank" dangerouslySetInnerHTML={{ __html: video["channelName"] + ": " + video["setName"] }}></a>
                                                 </Grid>
@@ -1146,8 +1094,12 @@ export const Main = () => {
                                 ))}
 
                             </Grid>
+                            
                         }
+
+
                     </Grid>
+              
 
                 </Grid>
             </Grid>

@@ -1,0 +1,49 @@
+@import "variables";
+
+
+
+#login-container{
+    position: fixed;
+    right: 20px;
+    top: 26px;
+}
+
+.login-logout-button{
+    border-radius: 4px,; 
+    padding: 10px 24px; 
+    cursor: pointer; 
+    font-weight: 500;
+    font-size: 16px;
+
+}
+
+#login-button, #logout-button{
+    border:none !important;
+    box-shadow: none !important;
+    font-weight: bold !important;
+    color: $text-color-not-played !important;
+}
+
+#login-button{
+    background-image: url('../images/blue-rubber.png') !important ;
+    background-size: 100px 100px;
+    background-repeat: repeat;
+}
+
+#logout-button{
+    background-image: url('../images/red-rubber.png') !important ;
+    background-size: 100px 100px;
+    background-repeat: repeat;
+}
+
+@media(max-width: $md){
+    .login-logout-button{
+        padding: 5px 14px; 
+        font-weight: 500;
+        font-size: 16px;
+    }
+    #login-container{
+        right: 10px;
+        top: 10px;
+    }
+}

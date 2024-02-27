@@ -1,0 +1,44 @@
+@import "variables";
+
+
+#header-title{
+    font-size: 24px;
+    margin-top: 5px;
+    font-weight: bolder !important;
+    background-image: url('../images/yellow-rubber.png'); /* Adjust the path */
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    background-size: 120px 120px;
+    display: inline-block;
+    float: left; 
+    padding: 0px 20px;
+}
+
+
+@media(min-width: $md){
+    #header-title{
+        font-size: 44px;
+        margin-top: 20px;
+    }
+}
+
+
+@media(min-width: $lg){
+    #header-title{
+        font-size: 64px;
+        margin-top: 78px;
+    }
+}
+
+@media(min-width: $xl){
+    #header-title{
+        font-size: 74px;
+        margin-top: 78px;
+    }
+}
+
+
+
+
