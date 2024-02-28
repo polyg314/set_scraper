@@ -28,8 +28,8 @@ import "./styles/main.scss"
 import "./styles/header.scss"
 import "./styles/login.scss"
 import "./styles/main-video.scss"
-import "./styles/main-content.scss"
-
+import "./styles/main-content-buttons.scss"
+import "./styles/main-content-cards.scss"
 
 
 
@@ -377,32 +377,6 @@ export const Main = () => {
     }, []);
 
 
-    
-    // const [userLikedVideoIds, setUserLikedVideoIds] = useState([])
-
-    // const fetchLikedVideos = async (accessToken) => {
-    //     fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&myRating=like&access_token=${accessToken}`)
-    //       .then(response => response.json())
-    //       .then(data => {
-    //         console.log("LIKED VIDEOS")
-    //         console.log(data.items); // This will log the liked videos
-    //         return data.items;
-    //         // Process the data here
-    //       })
-    //       .catch(error => console.log(error));
-    //   };
-
-
-    // useEffect(() => {
-    //     if(userInfo.accessToken){
-    //         fetchLikedVideos(userInfo.accessToken).then(res => {
-    //             console.log("SUER liked videos")
-    //             console.log(res)
-    //         })
-    //     }
-
-    // }, [userInfo.accessToken])
-
 
     function formatDateEST(isoDateString: string): string {
         const options: Intl.DateTimeFormatOptions = {
@@ -475,16 +449,7 @@ export const Main = () => {
         likeVideo(userInfo.accessToken, videoId);
     };
 
-    // const handlePlayPrevious = (videoId) => {
-    //     // for (let i = 0; i < songVideos.length; i++) {
-    //     //     if (songVideos[i].id.videoId === videoId) {
-    //     //         setCurrentVideo(songVideos[i - 1])
-    //     //         return
-    //     //     }
-    //     // }
-    //     // setCurrentVideo(songVideos[0])
 
-    // }
 
     const getPreviousDisabled = () => {
         var disabled = false
@@ -883,12 +848,7 @@ export const Main = () => {
                                     }
 
                                 </Grid>
-                                <Grid item id="search-filter-bar-outer" xs={radioValue === 'SETS' ? 6 : 12} style={{
-                                    // paddingLeft: radioValue === 'SETS' ? '10px' : '0px',
-                                    // paddingRight: '0px',
-                                    // paddingTop: '0px',
-                                    // paddingBottom: '0px'
-                                }}>
+                                <Grid item id="search-filter-bar-outer" xs={radioValue === 'SETS' ? 6 : 12} >
                                     <TextField
                                         fullWidth
                                         onChange={(e) => handleSetFilter(e)}
@@ -904,7 +864,7 @@ export const Main = () => {
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid container className="card-holder-outer" justifyContent="flex-end" item style={{}}>
+                    <Grid container xs={12} className="card-holder-outer" justifyContent="flex-end" item style={{}}>
                             
                         {radioValue === 'SETS' &&
                             <>
@@ -991,7 +951,7 @@ export const Main = () => {
                                                                                 disabled={addedSets.includes(video["id"]["videoId"])}
                                                                                 onClick={(e) => handleScrapeSet(video)}
                                                                             >
-                                                                                {addedSets.includes(video["id"]["videoId"]) ? <>Added</> : <><AddIcon style={{ marginRight: 5 }} />Songs</>}
+                                                                                {addedSets.includes(video["id"]["videoId"]) ? <p style={{fontSize: 13}}>Added</p> : <p style={{fontSize: 13}}><AddIcon style={{ marginRight: 5 }} />Songs</p>}
                                                                             </Button>
                                                                         </div>
                                                                     </Grid>
@@ -1025,6 +985,8 @@ export const Main = () => {
                                 {songVideos.map((video, index) => (
 
                                     <>
+                                    {getFiltered(video, filter) && 
+                                        <>
                                         <Grid className={"song-card-outer" + (playedSongs.includes(video["id"]["videoId"]) ? " already-played" : "") + (currentVideo.id.videoId === video.id.videoId ? " playing" : "")} container key={index} xs={12}>
                                             <Grid className="set-card-inner" item container xs={12} style={{}}>
 
@@ -1113,8 +1075,8 @@ export const Main = () => {
                                         </Grid>
 
 
-
-
+                                                                </>
+                                    }
                                     </>
                                 ))}
 

@@ -1,0 +1,156 @@
+@import "variables";
+
+.card-holder-outer{
+
+    background-image: url('../images/yellow-rubber.png');
+    background-size: 120px 120px;
+    background-repeat: repeat;
+    padding: 10px;
+    // padding-bottom: 30px !important;
+    position: fixed;
+    top: 320px;
+    right: 0px;
+    overflow: hidden; /* Prevents overflow */
+    height: calc(100vh - 320px);
+    width: 100% !important;
+    border-bottom: 10px solid transparent; /* Define the border size */
+    border-image-source: url('../images/yellow-rubber.png'); /* Path to your image */
+    border-image-slice: 60; /* Adjusts the slicing of the image */
+    border-image-repeat: repeat;
+    // border-top: 10px solid rgb(34, 30, 34);
+    // border-bottom: 10px solid rgb(34, 30, 34);
+    // margin-top: 0px !important;
+}
+
+
+@media(min-width: $md) and (max-width: $lg){
+    
+    .card-holder-outer{
+        // width: calc((6.5/12 * 100%) - 40px) !important;
+        // position: fixed;
+        top: 420px;
+        // right: 0px;
+        // overflow: hidden; /* Prevents overflow */
+        height: calc(100vh - 420px);
+        // width: 100% !important;
+    }
+}
+
+
+@media(min-width: $lg){
+    .card-holder-outer{
+        width: calc((6.5/12 * 100%) - 40px) !important;
+        position: fixed;
+        top: 280px;
+        right: 0px;
+        overflow: hidden; /* Prevents overflow */
+        height: calc(100vh - 320px);
+        margin: 0px 20px !important;
+    }
+}
+
+.card-holder-inner{
+
+
+    // border: 7px solid $theme-color-3;
+    padding: 0px !important;
+    padding-bottom: 40px !important;
+    background-color: black;
+    // background-color: $theme-color-3;
+    // border-style: inset; 
+    height: 100%; /* Take full height of its parent */
+   
+    // border-style: inset;
+    overflow: scroll;
+}
+
+
+
+
+.card-button{
+    height: 100%;
+    box-shadow: none !important;
+    background-image: url('../images/paper-background-blue.png') ;
+    background-size: 100px 100px;
+    background-repeat: repeat;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    color: rgba(2, 2, 79, 0.744) !important
+}
+
+.already-played:not(.playing){
+    .card-button{
+        background-image: url('../images/paper-background-blue-grey.png');
+        background-size: 100px 100px;
+        background-repeat: repeat;
+        color: rgba(2, 2, 79, 0.645) !important
+    }
+
+}
+
+
+
+
+.already-played.playing{
+    .card-button.Mui-disabled{
+        background-image: url('../images/paper-background-yellow.png');
+        background-size: 100px 100px;
+        background-repeat: repeat;
+        color: rgba(2, 2, 79, 0.645) !important
+    }
+
+}
+
+
+
+
+
+
+.card-button.like, .card-button.add-songs{
+    background-image: url('../images/paper-background-blue-blue.png') !important ;
+    background-size: 100px 100px;
+    background-repeat: repeat;
+}
+
+.card-button.like.Mui-disabled, .card-button.add-songs.Mui-disabled{
+    background-image: url('../images/paper-background-blue-grey.png') !important ;
+    background-size: 100px 100px;
+    background-repeat: repeat;
+    color: rgba(2, 2, 79, 0.645) !important
+}
+
+
+
+.card-button.remove{
+    background-image: url('../images/paper-background-red.png') !important ;
+    background-size: 100px 100px;
+    background-repeat: repeat;
+}
+
+
+
+.sets-songs-button-holder{
+    padding: 10px;
+}
+
+
+
+
+.published-text{
+    margin-left: 5px;
+}
+
+.song-set-link {
+    text-decoration: none;
+    color: $text-color-played;
+  }
+  
+.artist-text{
+    margin: 5px 0px !important;
+}
+
+
+.unplayed-text{
+    margin-top: 0px !important;
+    font-weight: bold;
+}
