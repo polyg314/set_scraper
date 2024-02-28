@@ -38,13 +38,52 @@
     .main-video-outer div, .main-video-outer div iframe{
         height: 100%;
     }
+    #video-buttons-upper{
+        display: none !important;
+    }
+    .vbc{
+        padding: 4px !important;
+    }
+    .vbc button{
+        font-size: 10px !important;
+        padding: 2px;
+        min-width: 30px !important;
+        height: 30px !important;
+    }
+    .vbt{
+        display: none !important;
+    }
+    .vbc svg{
+        width: 14px;
+    }
+    .video-buttons-container{
+        margin-top: 10px !important;
+        // background-color: blue;
+    }
+    
+}
+
+@media(max-width: $md){
+    .main-video-outer{
+        height: 100px;
+    }
+}
+
+@media(min-width: $lg){
+    .ff-rw-sm{
+        display: none !important;
+    }
+    .video-button-container-inner{
+        padding: 10px;
+    }
+    .video-buttons-container{
+        margin-top: 20px !important;
+        // background-color: blue;
+    }
 }
 
   
-.video-buttons-container{
-    margin-top: 20px !important;
-    // background-color: blue;
-}
+
 
 .video-button{
     box-shadow: 0px 0px 0px 0px $theme-color-3 !important;  
@@ -66,6 +105,6 @@
     background-image: url('../images/grey-rubber.png');
 }
 
-.video-button-container-inner{
-    padding: 10px;
-}
+
+
+

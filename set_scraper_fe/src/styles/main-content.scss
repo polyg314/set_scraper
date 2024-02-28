@@ -1,6 +1,115 @@
 @import "variables";
 
 
+
 #main-content-outer{
+    // display: none !important;
+}
+#main-content-control-panel-outer{
+   height: 50px;
+}
+
+.sets-songs-button{
+    box-shadow: 0px 0px 0px 0px $theme-color-3 !important;  
+    font-size: 16px !important;
+    padding: 3px !important;
+    margin-bottom: 10px !important;
+    border-radius: 10px !important;
+    color: $color-not-active !important;
+    background-image: url('../images/yellow-rubber-faded.png');
+    background-size: 120px 120px;
+    background-repeat: repeat;
+
+}
+
+.sets-songs-button:hover{
+    background-image: url('../images/blue-rubber.png');
+    background-size: 120px 120px;
+    background-repeat: repeat;
+    box-shadow: 0px 0px 0px 0px $theme-color-3 !important;  
+    color: $color-hover !important;
+}
+
+.sets-songs-button.active{
+    box-shadow: 0px 0px 0px 0px $theme-color-3 !important;  
+    color: $color-active !important;
+    background-image: url('../images/yellow-rubber.png');
+    background-size: 120px 120px;
+    background-repeat: repeat;
+}
+
+
+
+
+#search-filter-bar-outer{
+    padding: 0px 10px;
+ }
+ 
+ .search-filter-bar{
+     background-color: rgba(255, 255, 255, 0.931);
+ }
+ 
+ #channel-switcher-outer-wrapper{
+     // padding: 0px 5px 0px 0px;
+     padding: 0px 10px;
+ }
+ 
+ #channel-switcher-outer{
+     background-color: rgba(255, 255, 255, 0.931);
+ }
+
+ .current-channel-select{
+    font-size: 26px !important;
+}
+
+ 
+@media (max-width: $lg){
+    .search-filter-bar .MuiInputBase-input{
+        padding: 10px;
+    }
+    .current-channel-select{
+        font-size: 16px !important;
+    }
+    
+
+}
+
+@media (min-width: $md){
+    #main-content-control-panel-outer{
+        // margin-top: 230px;
+    }
+
+    .sets-songs-button{
+    
+        font-size: 24px !important;
+    
+    }
+
+    
+}
+
+
+@media (min-width: $lg){
+    #main-content-control-panel-outer{
+        padding: 10px;
+        position: fixed;
+        top: 100px;
+        width: calc(6.5/12 * 100%);
+        z-index: 11111;
+        margin-top: 00px;
+    }
+
+    .sets-songs-button{
+    
+        font-size: 36px !important;
+
+    
+    }
+
+    
+}
+
+
+.card-holder-outer{
     display: none !important;
 }

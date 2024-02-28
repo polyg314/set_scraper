@@ -27,7 +27,6 @@ export const ChannelsSelectWithArrows = ({ Channels, currentChannelId, handleSet
           fullWidth
           size="small"
           variant="outlined"
-          style={{fontSize:'26px'}}
           color="primary"
           value={currentChannelId}
           onChange={(e) => handleSetChannelId(e.target.value)}

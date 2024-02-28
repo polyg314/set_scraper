@@ -679,11 +679,12 @@ export const Main = () => {
 
                         <Grid xs={12} item container className="video-buttons-container">
                             <Grid container item xs={12} id="video-buttons-upper" style={{ padding: 5 }}>
-                            <Grid container item xs={6} justifyContent="flex-start" alignItems="center">
-                                    <Grid item xs={6} style={{ display: 'flex', justifyContent: 'flex-start', paddingLeft: 0 }}>
+                                <Grid container item xs={2} lg={6} justifyContent="flex-start" alignItems="center">
+                                    <Grid item xs={12} lg={4} style={{ display: 'flex', justifyContent: 'flex-start', paddingLeft: 0 }}>
                                         <Button
                                             className={"video-button"}
-                                            // fullWidth
+                                            fullWidth
+                                            
                                             // variant="contained"
                                             // color="primary"
                                             onClick={(e) => handleRW()}
@@ -692,10 +693,10 @@ export const Main = () => {
                                         </Button>
                                     </Grid>
                                 </Grid>
-                                <Grid container item xs={6} justifyContent="flex-end" alignItems="center">
-                                    <Grid item xs={6} style={{ display: 'flex', justifyContent: 'flex-end', paddingLeft: 10 }}>
+                                <Grid container item xs={2} lg={6} justifyContent="flex-end" alignItems="center">
+                                    <Grid item xs={12} lg={4} style={{ display: 'flex', justifyContent: 'flex-end', paddingLeft: 10 }}>
                                         <Button
-                                            // fullWidth
+                                            fullWidth
                                             className={"video-button"}
                                             onClick={(e) => handleFF()}
                                             disabled={getFFDisabled()}>
@@ -704,8 +705,22 @@ export const Main = () => {
                                     </Grid>
                                 </Grid>
                             </Grid>
-                            <Grid container item xs={12} style={{ padding: 5 }}>
-                                <Grid item xs={3} style={{ textAlign: "left", paddingLeft: 0 }} className="video-button-container-inner">
+                            <Grid container item xs={12} style={{  }}>
+                                <Grid container item xs={2} lg={6} justifyContent="flex-start" alignItems="center" className="ff-rw-sm vbc">
+                                    <Grid item xs={12} lg={4} style={{ display: 'flex', justifyContent: 'flex-start', paddingLeft: 0 }}>
+                                        <Button
+                                            className={"video-button"}
+                                            fullWidth
+                                            
+                                            // variant="contained"
+                                            // color="primary"
+                                            onClick={(e) => handleRW()}
+                                            disabled={getRWDisabled()}>
+                                            <FastRewindIcon /> <span className={"vbt"}>{currentlyPlayingType === 'SETS' ? " 5m" : " 30s"}</span>
+                                        </Button>
+                                    </Grid>
+                                </Grid>
+                                <Grid item xs={2} lg={3} style={{ textAlign: "left", paddingLeft: 0 }} className="video-button-container-inner vbc">
                                     <Button
                                         className={"video-button"}
                                         fullWidth
@@ -713,12 +728,12 @@ export const Main = () => {
                                         // color="primary"
                                         onClick={(e) => handlePlayPrevious()}
                                         disabled={getPreviousDisabled()}>
-                                        <SkipPreviousIcon /> {currentlyPlayingType === 'SETS' ? "Set" : "Song"}
+                                        <SkipPreviousIcon /> <span className={"vbt"}>{currentlyPlayingType === 'SETS' ? "Set" : "Song"}</span>
                                     </Button>
 
                                 </Grid>
 
-                                <Grid item xs={currentlyPlayingType === 'SETS' ? 3 : 6} className={"like-add-container video-button-container-inner"}>
+                                <Grid item xs={currentlyPlayingType === 'SETS' ? 2 : 4} lg={currentlyPlayingType === 'SETS' ? 3 : 6} className={"like-add-container video-button-container-inner vbc"}>
 
                                     <Tooltip
                                         placement="left"
@@ -738,7 +753,7 @@ export const Main = () => {
                                                } 
                                                 {!likedVideos.includes(currentVideo.id.videoId) && 
                                                 <>
-                                                <ThumbUpOffAltIcon style={{ marginRight: 5 }} />  {currentlyPlayingType === 'SETS' ? "Set" : "Song"}
+                                                <ThumbUpOffAltIcon style={{ marginRight: 5 }} />  <span className={"vbt"}>{currentlyPlayingType === 'SETS' ? "Set" : "Song"}</span>
 
                                                 </>
                                                } 
@@ -747,18 +762,17 @@ export const Main = () => {
                                 </Grid>
                                 {currentlyPlayingType === 'SETS' &&
 
-                                    <Grid item xs={3} className={"like-add-container video-button-container-inner"}>
+                                    <Grid item xs={2} lg={3} className={"like-add-container video-button-container-inner vbc"}>
                                         <Button variant="contained"
                                             className={"video-button"}
                                             fullWidth
-                                            // color="secondary"
                                             style={{}}
                                             disabled={addedSets.includes(currentVideo["id"]["videoId"])}
                                             onClick={(e) => handleScrapeSet(currentVideo)}
                                         >
                                             {!addedSets.includes(currentVideo["id"]["videoId"]) &&
                                                 <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                    <AddIcon style={{ marginRight: 8 }} /> Songs
+                                                    <AddIcon style={{ marginRight: 4 }} /> <span className={"vbt"}>Songs</span>
                                                 </span>
                                             }
 
@@ -772,7 +786,7 @@ export const Main = () => {
 
 
 
-                                <Grid item xs={3} style={{ textAlign: "right", paddingRight: 0 }} className="video-button-container-inner">
+                                <Grid item xs={2} lg={3}  style={{ textAlign: "right", paddingRight: 0 }} className="video-button-container-inner vbc">
                                     <Button
                                         className={"video-button"}
                                         fullWidth
@@ -780,9 +794,20 @@ export const Main = () => {
                                         // color="primary"
                                         onClick={(e) => handlePlayNext()}
                                         disabled={getNextDisabled()}>
-                                        {currentlyPlayingType === 'SETS' ? "Set" : "Song"}  <SkipNextIcon />
+                                        <span className={"vbt"}>{currentlyPlayingType === 'SETS' ? "Set" : "Song"}</span>  <SkipNextIcon />
                                     </Button>
 
+                                </Grid>
+                                <Grid container item xs={2} lg={6} justifyContent="flex-end" alignItems="center" className="ff-rw-sm vbc">
+                                    <Grid item xs={12} lg={4} style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                        <Button
+                                            fullWidth
+                                            className={"video-button"}
+                                            onClick={(e) => handleFF()}
+                                            disabled={getFFDisabled()}>
+                                            <span className={"vbt"}>{currentlyPlayingType === 'SETS' ? " 5m" : " 30s"}</span> <FastForwardIcon />
+                                        </Button>
+                                    </Grid>
                                 </Grid>
                             </Grid>
 
@@ -802,7 +827,7 @@ export const Main = () => {
 
             <Grid container justifyContent="flex-end" xs={12}>
 
-                <Grid item container sm={12} md={6.5} id="main-content-outer">
+                <Grid item container sm={12} lg={6.5} id="main-content-outer">
                     <Grid item id="login-container">
                         <Login />
                     </Grid>
@@ -858,7 +883,7 @@ export const Main = () => {
                                     }
 
                                 </Grid>
-                                <Grid item id="search-filter-bar-outer" xs={6} lg={radioValue === 'SETS' ? 6 : 12} style={{
+                                <Grid item id="search-filter-bar-outer" xs={radioValue === 'SETS' ? 6 : 12} style={{
                                     // paddingLeft: radioValue === 'SETS' ? '10px' : '0px',
                                     // paddingRight: '0px',
                                     // paddingTop: '0px',
@@ -873,7 +898,7 @@ export const Main = () => {
                                         placeholder={"Filter"}
                                         // style={{}}
                                         // size="small"
-                                        style={{ fontSize: '26px' }}
+                                        style={{ }}
                                         className={"search-filter-bar"} />
                                 </Grid>
                             </Grid>

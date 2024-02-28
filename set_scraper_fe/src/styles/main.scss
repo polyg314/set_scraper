@@ -19,50 +19,6 @@ body {
 
 
 
-.sets-songs-button{
-    box-shadow: 0px 0px 0px 0px $theme-color-3 !important;  
-
-    font-size: 36px !important;
-    padding: 3px !important;
-    margin-bottom: 10px !important;
-    border-radius: 10px !important;
-    color: $color-not-active !important;
-    background-image: url('../images/yellow-rubber-faded.png');
-    background-size: 120px 120px;
-    background-repeat: repeat;
-    // color: blue !important;
-    // height: 50px !important;
-    // background-color: blue;
-}
-
-.sets-songs-button{
-    // background: ;
-
-}
-.sets-songs-button:hover{
-    background-image: url('../images/blue-rubber.png');
-    background-size: 120px 120px;
-    background-repeat: repeat;
-    box-shadow: 0px 0px 0px 0px $theme-color-3 !important;  
-
-    // background-color: $theme-color-3 !important;
-    color: $color-hover !important;
-}
-
-.sets-songs-button.active{
-    box-shadow: 0px 0px 0px 0px $theme-color-3 !important;  
-    color: $color-active !important;
-    background-image: url('../images/yellow-rubber.png');
-    background-size: 120px 120px;
-    background-repeat: repeat;
-
-
-
-    // background: url('../images/paper-background-yellow.png') 100px 100px repeat;
-    // color: $theme-black !important;
-}
-
-
 
 
 .set-title-text{
@@ -158,16 +114,7 @@ body {
     // z-index: 11111;
 }
 
-#main-content-control-panel-outer{
-    // background-color: rgba(0, 255, 255, 0.422);
-    // border: 2px solid white;
-    padding: 10px;
-    position: fixed;
-    top: 100px;
-    width: calc(6.5/12 * 100%);
-    z-index: 11111;
 
-}
 
 .card-holder-outer{
     margin: 0px 20px !important;
