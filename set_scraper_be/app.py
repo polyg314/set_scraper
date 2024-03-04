@@ -10,7 +10,6 @@ from flask_cors import cross_origin
 from flask_caching import Cache
 from datetime import datetime, timedelta
 import pytz  # Ensure you have pytz installed for timezone-aware datetimes
-from bs4 import BeautifulSoup
 
 
 import redis
