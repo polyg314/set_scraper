@@ -18,6 +18,7 @@ app = Flask(__name__)
 # Configure CORS
 CORS(app, resources={r"/*": {"origins": "https://set-scrapper-fe-2l2i6lgdxq-wl.a.run.app"}}, supports_credentials=True)
 
+# CORS(app, supports_credentials=True)
 load_dotenv()
 
 
@@ -105,11 +106,10 @@ def get_videos():
     cache_key = get_cache_key(channelId)
     cached_response = cache.get(cache_key)
     if cached_response:
-        print("Returning cached response")
+        # print("Returning cached response")
         return jsonify(cached_response)
 
 
-    print("/api/videos CALLED")
     YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3/search'
     part = 'snippet'
     maxResults = 50
@@ -128,8 +128,8 @@ def get_videos():
         return jsonify({"error": "Failed to fetch videos"}), response.status_code
     
     videos = response.json().get('items', [])
-    one_day_ago = datetime.now(pytz.UTC) - timedelta(days=1)
-    filtered_videos = [video for video in videos if datetime.fromisoformat(video['snippet']['publishedAt'][:-1]+"+00:00") < one_day_ago]
+    three_days_ago = datetime.now(pytz.UTC) - timedelta(days=3)
+    filtered_videos = [video for video in videos if datetime.fromisoformat(video['snippet']['publishedAt'][:-1]+"+00:00") < three_days_ago]
 
     # Cache the response for next time
     cache.set(cache_key, filtered_videos, timeout=1800)  # Cache for 30 minutes
@@ -174,6 +174,7 @@ def get_html_from_url(url):
     
 @app.route('/get-youtube-info-2', methods=['POST'])
 def get_youtube_info():
+    # print("GET YOUTUBE INFO CALLED")
     reference_id = request.json.get('referenceId')
     if not reference_id:
         return jsonify({'error': 'No reference ID provided'}), 400
@@ -235,9 +236,7 @@ def remove_before_pattern(html_content):
     
     # Search for the pattern and find the first match
     match = re.search(pattern, html_content)
-    print("RB4")
-    print(match)
-    
+
     if match:
         # Find the index where the match starts
         start_index = match.start()
@@ -331,6 +330,7 @@ def fetch_video_data(video_id):
         return {'error': 'Failed to fetch YouTube page', 'success': False}
 
     song_count = extract_number_of_songs(html)
+
     if song_count > 0:
         html = remove_after_pattern(html)
         html = remove_before_pattern(html)

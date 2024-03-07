@@ -280,6 +280,9 @@ export const Main = () => {
                     updateSongVideos(videosToAdd);
                 }
 
+            }else{
+                enqueueSnackbar('0 songs detected - none added to queue', { variant: 'warning' });
+
             }
             return res.data;
         } catch (err) {

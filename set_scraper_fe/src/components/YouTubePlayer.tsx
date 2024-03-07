@@ -38,29 +38,11 @@ const updateCurrentTime = () => {
   const player = playerInstanceRef.current;
   if (player && player.getPlayerState() === window.YT.PlayerState.PLAYING) {
     const time = player.getCurrentTime();
-    // setCurrentTime(time); // Update your currentTime state/prop
-    // console.log(time)
 
     props.updateCurrentTime(time); // Assuming you have a prop function to update the time
   }
 };
 
-// // Function to seek the YouTube player's current time forward by 500 seconds
-// const seekForwardThreeHundredSeconds = () => {
-//   if (playerInstanceRef.current) {
-//     const currentTime = playerInstanceRef.current.getCurrentTime();
-//     const newTime = currentTime + 300; // Calculate new time by adding 500 seconds
-//     playerInstanceRef.current.seekTo(newTime); // Use the YouTube API to seek to the new time
-//   }
-// };
-
-// const seekBackwardThreeHundredSeconds = () => {
-//   if (playerInstanceRef.current) {
-//     const currentTime = playerInstanceRef.current.getCurrentTime();
-//     const newTime = currentTime - 300; // Calculate new time by adding 500 seconds
-//     playerInstanceRef.current.seekTo(newTime); // Use the YouTube API to seek to the new time
-//   }
-// }
 
 
   useEffect(() => {
@@ -70,7 +52,7 @@ const updateCurrentTime = () => {
         width: '100%',
         events: {
           onReady: (event) => {
-            console.log('YouTube Player is ready');
+
             setInterval(updateCurrentTime, 5000); // Poll every second while playing
           },
           onStateChange: (event) => {
@@ -105,14 +87,7 @@ const updateCurrentTime = () => {
 
   // Separate useEffect for handling side effects related to props.songVideos changes
 useEffect(() => {
-  // Here you can handle what should happen when props.songVideos changes,
-  // without directly affecting the YouTube player instance.
-  // This is a good place to implement logic that prepares for the next video or
-  // updates related UI elements based on the new list of videos.
-  // Note: There's no need to interact with the YouTube player instance here.
 
-  // Example:
-  // console.log("Updated songVideos list:", props.songVideos);
 
 }, [props.songVideos, props.channelVideos]); 
 
