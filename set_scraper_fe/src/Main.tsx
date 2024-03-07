@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import {  Grid, Typography } from "@mui/material";
+import {  Grid, IconButton, Typography } from "@mui/material";
 import axios from 'axios';
 import { Button, TextField, Tooltip } from "@material-ui/core";
 import { API_URL, Channels } from "./utils/constants";
@@ -21,7 +21,7 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import ReplayIcon from '@mui/icons-material/Replay';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
-
+import InfoIcon from '@mui/icons-material/Info'; // Using InfoIcon as an example
 
 // style imports
 import "./styles/main.scss"
@@ -30,6 +30,7 @@ import "./styles/login.scss"
 import "./styles/main-video.scss"
 import "./styles/main-content-buttons.scss"
 import "./styles/main-content-cards.scss"
+import AboutModal from "./components/AboutModal";
 
 
 
@@ -602,14 +603,21 @@ export const Main = () => {
         return unplayed.length
 
     }
+    const [open, setOpen] = React.useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
 
     return (
         <div>
+                        <AboutModal open={open} onClose={handleClose} />
+
            <Typography
             // style={{ }}
             id="header-title"
           >
             THE DOWNLOAD.
+
           </Typography>
 
             {currentVideo &&
@@ -794,6 +802,10 @@ export const Main = () => {
 
                 <Grid item container sm={12} lg={6.5} id="main-content-outer">
                     <Grid item id="login-container">
+                    <IconButton style={{padding: "0px 30px"}} onClick={handleOpen}>
+        <InfoIcon style={{color: "white", fontSize: 32}}/> {/* This is the "About This App" icon */}
+      </IconButton>
+
                         <Login />
                     </Grid>
                     <Grid item container xs={12} id="main-content-control-panel-outer">

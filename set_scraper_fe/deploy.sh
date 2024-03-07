@@ -1,9 +1,8 @@
 ####################################
 ########### VARIABLES ##############
 ####################################
-GCP_PROJECT="prj-data-science-sandbox"
+GCP_PROJECT="set-scraper"
 REGION="us-west2"
-
 SERVICE_NAME="set-scrapper-fe"
 
 
@@ -21,8 +20,7 @@ IMAGE_NAME_LATEST="$IMAGE_NAME:latest"
 echo "Create Docker image via 'Cloud Build' ..."
 gcloud builds submit  \
   --tag "$IMAGE_NAME_VERSION" \
-  --project $GCP_PROJECT \
-  --timeout=9000s
+  --project $GCP_PROJECT 
 
 
 ####################################

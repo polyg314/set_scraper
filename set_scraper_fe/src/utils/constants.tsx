@@ -1,5 +1,8 @@
-export const API_URL = 'http://localhost:5001';
+// local API 
+// export const API_URL = 'http://localhost:5001';
 
+// prod API
+export const API_URL = 'https://set-scraper-be-2l2i6lgdxq-wl.a.run.app';
 export var axiosConfig = {
     // "Access-Control-Allow-Methods":"GET,PUT,POST,DELETE,PATCH,OPTIONS",
     // "Access-Control-Allow-Origin": "*",

@@ -61,15 +61,16 @@ const Login = () => {
         const interval = setInterval(async () => {
             const now = new Date().getTime();
             if (userInfo.expires_at && userInfo.expires_at - now < 5 * 60 * 1000) { // 5 minutes before expiring
-                try {
-                    const response = await axios.post('/api/refresh-token', { googleId: userInfo.googleId });
-                    const { access_token, expires_in } = response.data;
-                    const expires = new Date(now + expires_in * 1000);
-                    Cookies.set('accessToken', access_token, { expires });
-                    setUserInfo(current => ({ ...current, accessToken: access_token }));
-                } catch (error) {
-                    console.error('Error refreshing token:', error);
-                }
+                setUserInfo({})
+                // try {
+                //     const response = await axios.post('/api/refresh-token', { googleId: userInfo.googleId });
+                //     const { access_token, expires_in } = response.data;
+                //     const expires = new Date(now + expires_in * 1000);
+                //     Cookies.set('accessToken', access_token, { expires });
+                //     setUserInfo(current => ({ ...current, accessToken: access_token }));
+                // } catch (error) {
+                //     console.error('Error refreshing token:', error);
+                // }
             }
         }, 60 * 1000); // Check every minute
 

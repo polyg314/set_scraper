@@ -6,17 +6,17 @@ WORKDIR /app
 
 # Copy our node module specification
 COPY package.json package.json
-COPY yarn.lock yarn.lock
+COPY package-lock.json package-lock.json
 
-# install node modules and build assets
-RUN yarn install --production --ignore-engines
+# Install node modules and build assets
+RUN npm install --production
 
 # Copy all files from current directory to working dir in image
 # Except the one defined in '.dockerignore'
 COPY . .
 
 # Create production build of React App
-RUN yarn build --timeout=100000000000000
+RUN npm run build 
 
 # Choose NGINX as our base Docker image
 FROM nginx:alpine

@@ -16,6 +16,10 @@
     padding: 0px 20px;
 }
 
+.yellow-text{
+    color: $theme-color-3 ;
+    text-shadow: 2px 2px 2px black !important;
+}
 
 @media(min-width: $md){
     #header-title{

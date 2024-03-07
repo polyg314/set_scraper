@@ -16,7 +16,7 @@ echo "================================"
 gcloud run deploy $SERVICE_NAME \
     --image=gcr.io/$PROJECT_ID/$SERVICE_NAME:latest \
     --region $REGION \
-    --ingress internal-and-cloud-load-balancing
+    # --ingress internal-and-cloud-load-balancing
 echo "======================================="
 echo "< Image deployed to Cloud Run service >"
 echo "======================================="

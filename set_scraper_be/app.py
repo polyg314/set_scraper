@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import requests
 import re
-import psycopg2
+# import psycopg2
 from dotenv import load_dotenv
 import os
 from werkzeug.serving import run_simple
@@ -12,22 +12,17 @@ from datetime import datetime, timedelta
 import pytz  # Ensure you have pytz installed for timezone-aware datetimes
 
 
-import redis
-
+# import redis
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+# Configure CORS
+CORS(app, resources={r"/*": {"origins": "https://set-scrapper-fe-2l2i6lgdxq-wl.a.run.app"}}, supports_credentials=True)
+
 load_dotenv()
 
 
-redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
+# redis_client = redis.Redis(host='localhost', port=6379, db=0, decode_responses=True)
 
-
-
-DB_HOST = os.getenv('DB_HOST')
-DB_NAME = os.getenv('DB_NAME')
-DB_USER = os.getenv('DB_USER')
-DB_PASSWORD = os.getenv('DB_PASSWORD')
 API_KEY = os.getenv('API_KEY')
 CLIENT_ID = os.getenv('CLIENT_ID')
 CLIENT_SECRET = os.getenv('CLIENT_SECRET')
@@ -41,15 +36,15 @@ YOUTUBE_API_URL = "https://www.googleapis.com/youtube/v3/search"
 
 
 
-
 def get_refresh_token(google_id):
+    return ''
     # Attempt to get the refresh token from Redis cache
-    refresh_token = redis_client.get(f"user:{google_id}:refresh_token")
-    if refresh_token is None:
-        # If not in cache, retrieve from secure storage, then cache it
-        refresh_token = retrieve_refresh_token_from_secure_storage(google_id)
-        redis_client.setex(f"user:{google_id}:refresh_token", 3600, refresh_token)  # Cache for 1 hour
-    return refresh_token
+    # refresh_token = redis_client.get(f"user:{google_id}:refresh_token")
+    # if refresh_token is None:
+    #     # If not in cache, retrieve from secure storage, then cache it
+    #     refresh_token = retrieve_refresh_token_from_secure_storage(google_id)
+    #     redis_client.setex(f"user:{google_id}:refresh_token", 3600, refresh_token)  # Cache for 1 hour
+    # return refresh_token
 
 def retrieve_refresh_token_from_secure_storage(google_id):
     # Placeholder for fetching the refresh token from your secure persistent storage
@@ -104,8 +99,6 @@ def get_cache_key(channelId):
 def get_videos():
     data = request.get_json()
     channelId = data.get('channelId', None)
-    print("CHANNEL ID")
-    print(channelId)
     if not channelId:
         return jsonify({"error": "channelId is required in the request body"}), 400
 
@@ -144,62 +137,6 @@ def get_videos():
     return jsonify(filtered_videos)
 
 
-
-# @app.route('/api/videos')
-# @cache.cached(timeout=300, query_string=True)  # Cache this route's response for 5 minutes
-# def get_videos():
-#     print("/api/videos CALLED")
-#     YOUTUBE_API_URL = 'https://www.googleapis.com/youtube/v3/search'
-#     channelId = 'UCJOtExbMu0RqIdiE4nMUPxQ'  # Example channel ID
-#     part = 'snippet'
-#     maxResults = 50
-#     order = 'date'
-#     type = 'video'
-
-#     # Calculate the datetime for one day ago in RFC 3339 format, effectively excluding the last 24 hours
-#     one_day_ago = datetime.now(pytz.UTC) - timedelta(days=1)
-
-#     params = {
-#         'part': part,
-#         'channelId': channelId,
-#         'maxResults': maxResults,
-#         'order': order,
-#         'type': type,
-#         'key': API_KEY,
-#     }
-
-#     response = requests.get(YOUTUBE_API_URL, params=params)
-#     videos = response.json().get('items', [])
-
-#     # Filter videos to exclude those published in the last day
-#     one_day_ago = datetime.now(pytz.UTC) - timedelta(days=1)
-#     filtered_videos = [video for video in videos if datetime.fromisoformat(video['snippet']['publishedAt'][:-1]+"+00:00") < one_day_ago]
-
-#     return filtered_videos
-
-
-# def extract_video_urls_from_metadata(html):
-#     soup = BeautifulSoup(html, 'html.parser')
-#     with open('yourfile.txt', 'w') as f:
-#         f.write(soup.prettify())
-#     print(soup)
-#     content_renderer_sections = soup.find(attrs={'id':'bottom-row'})
-#     print("MD")
-#     print(content_renderer_sections)
-#     urls = []
-#     pattern = r'href="/watch\?v=([a-zA-Z0-9_-]+)"'
-    
-#     # for section in content_renderer_sections:
-#     #     section_html = str(section)
-#     #     matches = re.findall(pattern, section_html)
-#     #     for match in matches:
-#     #         url = f'https://www.youtube.com/watch?v={match}'
-#     #         if url not in urls:
-#     #             urls.append(url)
-
-#     return urls
-
-
 def extract_unique_youtube_ids(html_content):
     """
     Extracts YouTube video IDs from the given HTML content, aiming to minimize capturing extraneous IDs.
@@ -217,8 +154,7 @@ def extract_unique_youtube_ids(html_content):
     
     # Use regex to find all matches in the HTML content
     found_video_ids = re.findall(video_id_regex, html_content)
-    # print("found")
-    # print(found_video_ids)
+
     
     # Remove duplicate IDs by converting the list to a set, then back to a list
     unique_video_ids = list(set(found_video_ids))
@@ -343,8 +279,6 @@ def remove_after_pattern(html_content):
 def get_youtube_info_init():
     
     reference_id = 'C1EzGpUCX44'
-    # ['gjZOiDVpS4U','YfwMgR0UDlk','WxQUQZh5kg0','oY9lifcROvU','ss61e73MWnM','699ExiHkOCg','PVEA2ovVM_U','_V-llw2kmBU','4b46uWsLxYc','4ykPvej9Zww']
-    # music_section_header = '{"simpleText":"Music"},"subtitle":{"simpleText":"10 songs"}'
 
     if not reference_id:
         return jsonify({'error': 'No reference ID provided'}), 400
@@ -353,32 +287,17 @@ def get_youtube_info_init():
     if html is None:
         return jsonify({'error': 'Failed to fetch YouTube page'}), 500
 
-    # Example usage:
-    # text_snippet = '{"simpleText":"Music"},"subtitle":{"simpleText":"10 songs"}'
     song_count =  extract_number_of_songs(html)
     if(song_count > 0):
-        # song_count =   extract_number_of_songs(text_snippet)
         html = remove_after_pattern(html)
         html = remove_before_pattern(html)
-        # print(html)
         ids = extract_unique_youtube_ids(html)
-        print(ids)
-        # print(html)
-
         links = [f'https://www.youtube.com/watch?v={id}' for id in ids]
-
-        
-        # video_urls = extract_video_urls_from_metadata(html)
-
         return jsonify({'links': links, 'success': True, 'song_count': song_count})
 
     else:
         return jsonify({'success' : False})
     
-
-
-
-
 
 def get_video_details(video_ids):
     """Fetch video details for given video IDs from YouTube Data API."""
@@ -425,88 +344,10 @@ def fetch_video_data(video_id):
     
 
 
-
-# @app.route('/scrape_set', methods=['POST', 'OPTIONS'])
-# @cross_origin()  # Enables CORS for this specific route
-# def scrape_set():
-#     # if request.method == 'OPTIONS':
-#     #     return {}, 200
-#     # print("scrape-set")
-#     # print("HELLLLOoooo1111")
-    
-#     # print(request.jsonl.videoId)
-
-#     video_id = request.json.get('videoId')
-
-#     # reference_id = 'C1EzGpUCX44'
-#     # ['gjZOiDVpS4U','YfwMgR0UDlk','WxQUQZh5kg0','oY9lifcROvU','ss61e73MWnM','699ExiHkOCg','PVEA2ovVM_U','_V-llw2kmBU','4b46uWsLxYc','4ykPvej9Zww']
-#     # music_section_header = '{"simpleText":"Music"},"subtitle":{"simpleText":"10 songs"}'
-
-#     if not video_id:
-#         return jsonify({'error': 'No reference ID provided'}), 400
-
-#     html = get_html_from_url(f'https://www.youtube.com/watch?v={video_id}')
-#     if html is None:
-#         return jsonify({'error': 'Failed to fetch YouTube page'}), 500
-
-#     # Example usage:
-#     # text_snippet = '{"simpleText":"Music"},"subtitle":{"simpleText":"10 songs"}'
-#     song_count =  extract_number_of_songs(html)
-#     if(song_count > 0):
-#         # song_count =   extract_number_of_songs(text_snippet)
-#         html = remove_after_pattern(html)
-#         html = remove_before_pattern(html)
-#         # print(html)
-#         ids = extract_unique_youtube_ids(html)
-#         print(ids)
-#         # print(html)
-
-#         links = [f'https://www.youtube.com/watch?v={id}' for id in ids]
-
-        
-#         # video_urls = extract_video_urls_from_metadata(html)
-
-#         return jsonify({'links': links, 'success': True, 'ids': ids, 'song_count': song_count})
-
-#     else:
-#         return jsonify({'success' : False})
-
-
-def create_connection():
-    connection = psycopg2.connect(
-        host=DB_HOST,
-        database=DB_NAME,
-        user=DB_USER,
-        password=DB_PASSWORD
-    )
-    return connection
-
-@app.route('/data', methods=['GET'])
-def get_data():
-    try:
-        connection = create_connection()
-        cursor = connection.cursor()
-        cursor.execute('SELECT * FROM your_table_name')
-        data = cursor.fetchall()
-        cursor.close()
-        connection.close()
-        return str(data)
-    except psycopg2.Error as error:
-        return str(error)
-
 @app.route('/', methods=['GET'])
 def get_home_info():
-    try:
-        connection = create_connection()
-        cursor = connection.cursor()
-        # cursor.execute('SELECT * FROM your_table_name')
-        cursor.close()
-        connection.close()
-        return str('hello backend')
-    except psycopg2.Error as error:
-        return str(error)
+    print("HOME ROUTE CALLED /")
+    return str('hello backend')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5001)
-    # app.debug = True  # Enable debug mode for automatic reloading
-    # run_simple('localhost', 5000, app, use_reloader=True)
+    app.run(debug=True, host="0.0.0.0", port=5001)
