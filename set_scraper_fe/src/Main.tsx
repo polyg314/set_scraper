@@ -337,14 +337,13 @@ export const Main = () => {
                 headers: axiosConfig
             })
             if (res.status === 200) {
-
                 return res.data
             }
-            return [{}]
+            return []
         }
         catch (err) {
             console.error('There was an error!', err);
-            return [{}]
+            return []
         }
 
 
@@ -365,12 +364,14 @@ export const Main = () => {
             .then(responses => {
                 let channelVideosCopy = objectCopy(channelVideos);
                 responses.forEach(response => {
-                    if (response.length > 0) {
-                        channelVideosCopy[response[0]["snippet"]["channelId"]] = response;
+                    if (Array.isArray(response) && response.length > 0 && response[0]?.snippet?.channelId) {
+                        channelVideosCopy[response[0].snippet.channelId] = response;
                     }
                 });
                 setChannelVideos(channelVideosCopy);
-                setCurrentVideo(channelVideosCopy[Channels[0]["channelId"]][0])
+                if (channelVideosCopy[Channels[0]["channelId"]] && channelVideosCopy[Channels[0]["channelId"]].length > 0) {
+                    setCurrentVideo(channelVideosCopy[Channels[0]["channelId"]][0])
+                }
                 console.log("CHANNEL VIDS")
                 console.log(channelVideosCopy)
                 // Optionally set the current video here, if needed
@@ -746,6 +747,7 @@ export const Main = () => {
                                             disabled={addedSets.includes(currentVideo["id"]["videoId"])}
                                             onClick={(e) => handleScrapeSet(currentVideo)}
                                         >
+                                            
                                             {!addedSets.includes(currentVideo["id"]["videoId"]) &&
                                                 <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <AddIcon style={{ marginRight: 4 }} /> <span className={"vbt"}>Songs</span>

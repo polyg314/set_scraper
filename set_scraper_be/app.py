@@ -10,13 +10,18 @@ from flask_cors import cross_origin
 from flask_caching import Cache
 from datetime import datetime, timedelta
 import pytz  # Ensure you have pytz installed for timezone-aware datetimes
+import json
 
 
 # import redis
 
 app = Flask(__name__)
 # Configure CORS
-CORS(app, resources={r"/*": {"origins": "https://set-scrapper-fe-2l2i6lgdxq-wl.a.run.app"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://set-scrapper-fe-2l2i6lgdxq-wl.a.run.app"
+]}}, supports_credentials=True)
 
 # CORS(app, supports_credentials=True)
 load_dotenv()
@@ -91,19 +96,32 @@ def refresh_token():
 
 
 
-def get_cache_key(channelId):
-    # Generate a unique cache key for the given channelId
+def get_cache_key(channelId, published_before_iso=None):
+    # Generate a cache key for the given channelId and day cutoff (older than)
+    # Use the date part of published_before to avoid stale results across days
+    if published_before_iso:
+        date_key = published_before_iso.split('T')[0]
+        return f"videos_{channelId}_before_{date_key}"
     return f"videos_{channelId}"
 
 
-@app.route('/api/videos', methods=['POST'])
+@app.route('/api/videos', methods=['POST', 'OPTIONS'])
+@cross_origin()
 def get_videos():
     data = request.get_json()
     channelId = data.get('channelId', None)
     if not channelId:
         return jsonify({"error": "channelId is required in the request body"}), 400
 
-    cache_key = get_cache_key(channelId)
+    # Ensure API key is configured to avoid opaque upstream 403s
+    if not API_KEY:
+        return jsonify({"error": "Backend not configured: missing API_KEY env var"}), 500
+
+    # Fetch videos older than 1 day (start 1 day back and go further)
+    published_before_dt = datetime.now(pytz.UTC) - timedelta(days=1)
+    published_before_iso = published_before_dt.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+    cache_key = get_cache_key(channelId, published_before_iso)
     cached_response = cache.get(cache_key)
     if cached_response:
         # print("Returning cached response")
@@ -121,20 +139,22 @@ def get_videos():
         'maxResults': maxResults,
         'order': order,
         'type': type,
+        'publishedBefore': published_before_iso,
         'key': API_KEY,
     }
     response = requests.get(YOUTUBE_API_URL, params=params)
     if response.status_code != 200:
-        return jsonify({"error": "Failed to fetch videos"}), response.status_code
+        return jsonify({
+            "error": "Failed to fetch videos",
+            "status": response.status_code,
+            "details": response.json() if 'application/json' in response.headers.get('Content-Type', '') else None
+        }), response.status_code
     
     videos = response.json().get('items', [])
-    three_days_ago = datetime.now(pytz.UTC) - timedelta(days=3)
-    filtered_videos = [video for video in videos if datetime.fromisoformat(video['snippet']['publishedAt'][:-1]+"+00:00") < three_days_ago]
+    # Return the full set from YouTube (up to maxResults) without date filtering
+    cache.set(cache_key, videos, timeout=1800)  # Cache for 30 minutes
 
-    # Cache the response for next time
-    cache.set(cache_key, filtered_videos, timeout=1800)  # Cache for 30 minutes
-
-    return jsonify(filtered_videos)
+    return jsonify(videos)
 
 
 def extract_unique_youtube_ids(html_content):
@@ -161,6 +181,122 @@ def extract_unique_youtube_ids(html_content):
     
     return unique_video_ids
 
+
+
+def extract_music_video_ids_from_ytinitialdata(html_content: str):
+    """Parse ytInitialData JSON and collect watchEndpoint.videoId under any
+    music-specific renderers. Returns ordered unique IDs or [] if parsing fails."""
+    try:
+        idx = html_content.find('ytInitialData')
+        if idx == -1:
+            return []
+        # Find first '{' after the key and extract balanced braces
+        brace_start = html_content.find('{', idx)
+        if brace_start == -1:
+            return []
+        depth = 0
+        i = brace_start
+        while i < len(html_content):
+            ch = html_content[i]
+            if ch == '{':
+                depth += 1
+            elif ch == '}':
+                depth -= 1
+                if depth == 0:
+                    break
+            i += 1
+        if depth != 0:
+            return []
+        json_str = html_content[brace_start:i+1]
+        data = json.loads(json_str)
+
+        music_keys = {
+            'videoDescriptionMusicSectionRenderer',
+            'musicDescriptionShelfRenderer',
+            'musicShelfRenderer'
+        }
+
+        ordered_ids = []
+        seen = set()
+
+        def walk(node, under_music=False):
+            nonlocal ordered_ids, seen
+            if isinstance(node, dict):
+                # If any music renderer key present, mark children as under_music
+                if any(k in node for k in music_keys):
+                    under_music = True
+                # Capture watchEndpoint under music
+                if under_music and 'watchEndpoint' in node:
+                    vid = node['watchEndpoint'].get('videoId')
+                    if vid and vid not in seen:
+                        seen.add(vid)
+                        ordered_ids.append(vid)
+                # Recurse
+                for v in node.values():
+                    walk(v, under_music)
+            elif isinstance(node, list):
+                for v in node:
+                    walk(v, under_music)
+
+        walk(data, under_music=False)
+        return ordered_ids
+    except Exception:
+        return []
+
+
+def extract_music_section_video_ids(html_content):
+    """
+    Extract video IDs from YouTube's Music section on a watch page.
+    Prefer parsing ytInitialData; fallback to regex around known renderers and a
+    wider context window anchored on the "Music" label.
+    """
+    ids = extract_music_video_ids_from_ytinitialdata(html_content)
+    if ids:
+        return ids
+
+    candidate_sections = []
+
+    renderer_patterns = [
+        r'videoDescriptionMusicSectionRenderer([\s\S]*?)(videoDescriptionInfocardsSectionRenderer|</script>)',
+        r'musicDescriptionShelfRenderer([\s\S]*?)(videoDescriptionInfocardsSectionRenderer|</script>)',
+        r'musicShelfRenderer([\s\S]*?)(</script>)'
+    ]
+
+    for pat in renderer_patterns:
+        m = re.search(pat, html_content)
+        if m:
+            candidate_sections.append(m.group(0))
+
+    if not candidate_sections:
+        label_match = re.search(r'"simpleText":"Music"', html_content)
+        if label_match:
+            start = max(0, label_match.start() - 30000)
+            end = min(len(html_content), label_match.end() + 30000)
+            candidate_sections.append(html_content[start:end])
+
+    if not candidate_sections:
+        return []
+
+    combined = "\n".join(candidate_sections)
+
+    id_patterns = [
+        r'"url":"\\/watch\?v=([a-zA-Z0-9_-]{11})',
+        r'"url":"/watch\?v=([a-zA-Z0-9_-]{11})',
+        r'/watch\?v=([a-zA-Z0-9_-]{11})'
+    ]
+
+    ids_in_order = []
+    for ip in id_patterns:
+        ids_in_order.extend(re.findall(ip, combined))
+
+    seen = set()
+    ordered_ids = []
+    for vid in ids_in_order:
+        if vid not in seen:
+            seen.add(vid)
+            ordered_ids.append(vid)
+
+    return ordered_ids
 
 
 def get_html_from_url(url):
@@ -329,18 +465,19 @@ def fetch_video_data(video_id):
     if html is None:
         return {'error': 'Failed to fetch YouTube page', 'success': False}
 
-    song_count = extract_number_of_songs(html)
-
-    if song_count > 0:
-        html = remove_after_pattern(html)
-        html = remove_before_pattern(html)
-        ids = extract_unique_youtube_ids(html)
-        video_details = get_video_details(ids)
-
-        links = [f'https://www.youtube.com/watch?v={id}' for id in ids]
-        return {'links': links, 'success': True, 'ids': ids, 'song_count': song_count, "video_details": video_details}
-    else:
+    # Parse only the dedicated Music section to avoid unrelated IDs
+    ids = extract_music_section_video_ids(html)
+    if not ids:
         return {'success': False}
+
+    video_details = get_video_details(ids)
+
+    # Keep ordering of extracted IDs and do not over-filter; this preserves tracks
+    id_to_item = {it.get('id'): it for it in video_details}
+    ordered_ids = [vid for vid in ids if vid in id_to_item]
+    links = [f'https://www.youtube.com/watch?v={vid}' for vid in ordered_ids]
+
+    return {'links': links, 'success': True, 'ids': ordered_ids, 'song_count': len(ordered_ids), 'video_details': [id_to_item[vid] for vid in ordered_ids]}
     
 
 
